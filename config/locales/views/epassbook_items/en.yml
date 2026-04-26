@@ -53,6 +53,12 @@ en:
       success: Account successfully linked to ePassbook.
       errors:
         invalid_epassbook_account: Invalid ePassbook account selected.
+    sync_status:
+      no_accounts: No accounts found
+      all_synced:
+        one: "%{count} account synced"
+        other: "%{count} accounts synced"
+      partial_sync: "%{linked_count} synced, %{unlinked_count} need setup"
     epassbook_item:
       deletion_in_progress: "(deletion in progress...)"
       syncing: Syncing...

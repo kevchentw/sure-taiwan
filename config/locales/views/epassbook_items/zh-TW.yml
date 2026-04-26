@@ -53,6 +53,12 @@ zh-TW:
       success: 帳戶已成功連結至 e 存摺。
       errors:
         invalid_epassbook_account: 所選的 e 存摺帳戶無效。
+    sync_status:
+      no_accounts: 找不到帳戶
+      all_synced:
+        one: "%{count} 個帳戶已同步"
+        other: "%{count} 個帳戶已同步"
+      partial_sync: "%{linked_count} 個已同步，%{unlinked_count} 個待設定"
     epassbook_item:
       deletion_in_progress: （刪除中...）
       syncing: 同步中...
