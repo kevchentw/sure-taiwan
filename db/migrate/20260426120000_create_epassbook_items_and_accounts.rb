@@ -33,7 +33,6 @@ class CreateEpassbookItemsAndAccounts < ActiveRecord::Migration[7.2]
     end
 
     add_index :epassbook_items, :status
-    add_index :epassbook_items, :family_id
 
     create_table :epassbook_accounts, id: :uuid do |t|
       t.references :epassbook_item, null: false, foreign_key: true, type: :uuid
