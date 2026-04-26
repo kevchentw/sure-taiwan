@@ -17,7 +17,7 @@
   ) %>
 <% end %>
 
-<% if @manual_accounts.empty? && @plaid_items.empty? && @simplefin_items.empty? && @lunchflow_items.empty? && @enable_banking_items.empty? && @coinstats_items.empty? && @coinbase_items.empty? && @mercury_items.empty? && @snaptrade_items.empty? && @indexa_capital_items.empty? && @sophtron_items.empty? %>
+<% if @manual_accounts.empty? && @plaid_items.empty? && @simplefin_items.empty? && @epassbook_items.empty? && @lunchflow_items.empty? && @enable_banking_items.empty? && @coinstats_items.empty? && @coinbase_items.empty? && @mercury_items.empty? && @snaptrade_items.empty? && @indexa_capital_items.empty? && @sophtron_items.empty? %>
   <%= render "empty" %>
 <% else %>
   <div class="space-y-2">
@@ -27,6 +27,10 @@
 
     <% if @simplefin_items.any? %>
       <%= render @simplefin_items.sort_by(&:created_at) %>
+    <% end %>
+
+    <% if @epassbook_items.any? %>
+      <%= render @epassbook_items.sort_by(&:created_at) %>
     <% end %>
 
     <% if @lunchflow_items.any? %>

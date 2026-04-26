@@ -222,6 +222,26 @@ class Account < ApplicationRecord
       )
     end
 
+    def create_from_epassbook_account(epassbook_account, account_type, subtype = nil)
+      balance = epassbook_account.current_balance || 0
+      family  = epassbook_account.epassbook_item.family
+
+      accountable_attributes = {}
+      accountable_attributes[:subtype] = subtype if subtype.present?
+
+      create_and_sync(
+        {
+          family:                 family,
+          name:                   epassbook_account.display_name,
+          balance:                balance,
+          currency:               epassbook_account.currency || "TWD",
+          accountable_type:       account_type,
+          accountable_attributes: accountable_attributes
+        },
+        skip_initial_sync: true
+      )
+    end
+
     def create_from_coinbase_account(coinbase_account)
       # All Coinbase accounts are crypto exchange accounts
       family = coinbase_account.coinbase_item.family

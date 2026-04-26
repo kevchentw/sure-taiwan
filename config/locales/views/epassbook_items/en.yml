@@ -1,0 +1,73 @@
+---
+en:
+  epassbook_items:
+    new:
+      title: Connect ePassbook (集保ePassbook)
+      tdcc_user_id_label: ePassbook Account ID
+      tdcc_password_label: ePassbook Password
+      connect: Connect
+      cancel: Cancel
+    create:
+      success: ePassbook connected! Your accounts will appear shortly as they sync in the background.
+      otp_sent: A verification code has been sent to your registered email. Please enter it below.
+      errors:
+        unexpected: An unexpected error occurred. Please try again.
+    destroy:
+      success: ePassbook connection will be removed.
+    otp:
+      title: Email Verification
+      description: Enter the verification code sent to your registered email address.
+      otp_code_label: Verification Code
+      verify: Verify
+      cancel: Cancel
+    verify_otp:
+      success: Verification successful! Your accounts are syncing in the background.
+      errors:
+        no_credentials: Credentials not found. Please reconnect your ePassbook account.
+        unexpected: Verification failed. Please try again.
+    setup_accounts:
+      title: Set Up ePassbook Accounts
+      no_accounts: No accounts ready to set up yet. Your sync may still be in progress — check back shortly.
+      back: Back to Accounts
+      stock_account: Stock Account
+      bank_account: Bank Account
+      account_type_label: Account Type
+      subtype_label: Account Subtype
+      skip: Skip this account
+      investment_type: Investment Account
+      depository_type: Bank / Depository Account
+      create_accounts: Create Accounts
+      cancel: Cancel
+    complete_account_setup:
+      success:
+        one: Successfully created %{count} account! Transactions and holdings are being imported.
+        other: Successfully created %{count} accounts! Transactions and holdings are being imported.
+    select_existing_account:
+      title: "Link ePassbook to %{account_name}"
+      no_accounts_found: No unlinked ePassbook accounts found. Try syncing first.
+      stock_account: Stock
+      bank_account: Bank
+      link_account: Link
+      cancel: Cancel
+    link_existing_account:
+      success: Account successfully linked to ePassbook.
+      errors:
+        invalid_epassbook_account: Invalid ePassbook account selected.
+    epassbook_item:
+      deletion_in_progress: "(deletion in progress...)"
+      syncing: Syncing...
+      requires_update: Reconnect
+      error: Error occurred while syncing
+      status: Last synced %{timestamp} ago
+      status_never: Never synced
+      status_with_summary: "Last synced %{timestamp} ago • %{summary}"
+      setup_needed: New accounts ready to set up
+      setup_description: Choose account types for your newly imported ePassbook accounts.
+      setup_action: Set Up New Accounts
+      setup_accounts_menu: Set Up Accounts
+      more_accounts_available:
+        one: "%{count} more account available to set up"
+        other: "%{count} more accounts available to set up"
+      no_accounts_title: No accounts found
+      no_accounts_description: This connection doesn't have any synchronized accounts yet.
+      delete: Delete

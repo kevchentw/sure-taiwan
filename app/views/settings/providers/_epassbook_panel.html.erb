@@ -1,0 +1,52 @@
+<div class="space-y-4">
+  <div class="prose prose-sm text-secondary">
+    <p class="text-primary font-medium">如何連結 ePassbook：</p>
+    <ol>
+      <li>確認您已在手機上安裝並完成 <strong>集保e存摺 (ePassbook)</strong> 的設定</li>
+      <li>點擊下方「連結 ePassbook」按鈕，輸入您的 ePassbook 帳號及密碼</li>
+      <li>如果系統偵測到新裝置，將會發送驗證碼至您的註冊信箱，請輸入驗證碼完成驗證</li>
+      <li>連結成功後，前往帳戶頁面設定您的股票及銀行帳戶</li>
+    </ol>
+  </div>
+
+  <% epassbook_items = Current.family.epassbook_items.active %>
+  <% if epassbook_items.any? %>
+    <div class="space-y-2">
+      <% epassbook_items.each do |item| %>
+        <div class="flex items-center justify-between p-3 rounded-lg border border-primary bg-surface">
+          <div>
+            <p class="text-sm font-medium text-primary"><%= item.institution_display_name %></p>
+            <p class="text-xs text-secondary">
+              <% if item.last_synced_at %>
+                Last synced <%= time_ago_in_words(item.last_synced_at) %> ago
+              <% else %>
+                Never synced
+              <% end %>
+            </p>
+          </div>
+          <% if item.requires_update? %>
+            <span class="text-xs text-warning">Reconnect needed</span>
+          <% else %>
+            <div class="w-2 h-2 bg-success rounded-full"></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <p class="text-sm text-secondary">
+      Visit the <%= link_to "Accounts", accounts_path, class: "link" %> tab to manage synced accounts.
+    </p>
+  <% else %>
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+      <p class="text-sm text-secondary">Not connected</p>
+    </div>
+  <% end %>
+
+  <%= render DS::Link.new(
+    text: "連結 ePassbook",
+    variant: "primary",
+    icon: "plus",
+    href: new_epassbook_item_path,
+    frame: :modal
+  ) %>
+</div>

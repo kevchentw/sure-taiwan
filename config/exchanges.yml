@@ -251,7 +251,10 @@ XKOS:
   name: KOSDAQ
   country: KR
 XTAI:
-  name: Taiwan
+  name: Taiwan Stock Exchange
+  country: TW
+ROCO:
+  name: Taiwan OTC
   country: TW
 XSES:
   name: Singapore

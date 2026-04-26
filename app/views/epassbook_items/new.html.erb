@@ -1,0 +1,30 @@
+<%= turbo_frame_tag "modal" do %>
+  <%= render DS::Dialog.new do |dialog| %>
+    <% dialog.with_header(title: t(".title")) %>
+
+    <% dialog.with_body do %>
+      <% if @error_message.present? %>
+        <div class="mb-4 p-3 rounded-md bg-destructive/10 text-destructive text-sm">
+          <%= @error_message %>
+        </div>
+      <% end %>
+
+      <%= form_with model: @epassbook_item, url: epassbook_items_path, method: :post, data: { turbo: true, turbo_frame: "_top" } do |f| %>
+        <div class="space-y-3">
+          <div>
+            <%= f.label :tdcc_user_id, t(".tdcc_user_id_label"), class: "text-sm text-secondary block mb-1" %>
+            <%= f.text_field :tdcc_user_id, class: "input", autocomplete: "username" %>
+          </div>
+          <div>
+            <%= f.label :tdcc_password, t(".tdcc_password_label"), class: "text-sm text-secondary block mb-1" %>
+            <%= f.password_field :tdcc_password, class: "input", autocomplete: "current-password" %>
+          </div>
+          <div class="flex items-center gap-2 justify-end pt-2">
+            <%= link_to t(".cancel"), accounts_path, class: "btn", data: { turbo_frame: "_top", action: "DS--dialog#close" } %>
+            <%= f.submit t(".connect"), class: "btn btn--primary" %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

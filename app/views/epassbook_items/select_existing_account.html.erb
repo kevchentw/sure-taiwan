@@ -1,0 +1,39 @@
+<%= turbo_frame_tag "modal" do %>
+  <%= render DS::Dialog.new do |dialog| %>
+    <% dialog.with_header(title: t(".title", account_name: @account.name)) %>
+
+    <% dialog.with_body do %>
+      <% if @available_epassbook_accounts.blank? %>
+        <div class="p-4 text-sm text-secondary">
+          <p><%= t(".no_accounts_found") %></p>
+        </div>
+      <% else %>
+        <%= form_with url: link_existing_account_epassbook_items_path, method: :post, class: "space-y-4" do %>
+          <%= hidden_field_tag :account_id, @account.id %>
+          <div class="space-y-2 max-h-64 overflow-auto">
+            <% @available_epassbook_accounts.each do |ea| %>
+              <label class="flex items-center gap-3 p-2 rounded border border-surface-inset/50 hover:border-primary cursor-pointer">
+                <%= radio_button_tag :epassbook_account_id, ea.id, false %>
+                <div class="flex flex-col">
+                  <span class="text-sm text-primary font-medium"><%= ea.display_name %></span>
+                  <span class="text-xs text-secondary">
+                    <%= ea.currency %>
+                    <% if ea.current_balance.present? %>
+                      • <%= number_to_currency(ea.current_balance, unit: ea.currency) %>
+                    <% end %>
+                    • <%= ea.stock? ? t(".stock_account") : t(".bank_account") %>
+                  </span>
+                </div>
+              </label>
+            <% end %>
+          </div>
+
+          <div class="flex items-center justify-end gap-2">
+            <%= render DS::Button.new(text: t(".link_account"), variant: :primary, icon: "link-2", type: :submit) %>
+            <%= render DS::Link.new(text: t(".cancel"), variant: :secondary, href: accounts_path, data: { turbo_frame: "_top" }) %>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

@@ -1,0 +1,130 @@
+<%# locals: (epassbook_item:) %>
+
+<%= tag.div id: dom_id(epassbook_item) do %>
+  <% unlinked_count = epassbook_item.epassbook_accounts
+       .left_joins(:account_provider)
+       .where(account_providers: { id: nil })
+       .count rescue 0 %>
+
+  <details open class="group bg-container p-4 shadow-border-xs rounded-xl">
+    <summary class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <%= icon "chevron-right", class: "group-open:transform group-open:rotate-90" %>
+
+        <div class="flex items-center justify-center h-8 w-8 bg-success/10 rounded-full">
+          <div class="flex items-center justify-center">
+            <%= tag.p epassbook_item.institution_display_name.first.upcase, class: "text-success text-xs font-medium" %>
+          </div>
+        </div>
+
+        <div class="pl-1 text-sm">
+          <div class="flex items-center gap-2">
+            <%= tag.p epassbook_item.institution_display_name, class: "font-medium text-primary" %>
+            <% if epassbook_item.scheduled_for_deletion? %>
+              <p class="text-destructive text-sm animate-pulse"><%= t(".deletion_in_progress") %></p>
+            <% end %>
+          </div>
+
+          <% if epassbook_item.syncing? %>
+            <div class="text-secondary flex items-center gap-1">
+              <%= icon "loader", size: "sm", class: "animate-spin" %>
+              <%= tag.span t(".syncing") %>
+            </div>
+          <% elsif epassbook_item.requires_update? %>
+            <div class="text-warning flex items-center gap-1">
+              <%= icon "alert-triangle", size: "sm", color: "warning" %>
+              <%= tag.span t(".requires_update") %>
+            </div>
+          <% elsif epassbook_item.sync_error.present? %>
+            <div class="text-secondary flex items-center gap-1">
+              <%= render DS::Tooltip.new(text: epassbook_item.sync_error, icon: "alert-circle", size: "sm", color: "destructive") %>
+              <%= tag.span t(".error"), class: "text-destructive" %>
+            </div>
+          <% else %>
+            <p class="text-secondary">
+              <% if epassbook_item.last_synced_at %>
+                <% if epassbook_item.sync_status_summary %>
+                  <%= t(".status_with_summary", timestamp: time_ago_in_words(epassbook_item.last_synced_at), summary: epassbook_item.sync_status_summary) %>
+                <% else %>
+                  <%= t(".status", timestamp: time_ago_in_words(epassbook_item.last_synced_at)) %>
+                <% end %>
+              <% else %>
+                <%= t(".status_never") %>
+              <% end %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+
+      <% if Current.user&.admin? %>
+        <div class="flex items-center gap-2">
+          <%= icon(
+            "refresh-cw",
+            as_button: true,
+            href: sync_epassbook_item_path(epassbook_item),
+            disabled: epassbook_item.syncing?
+          ) %>
+
+          <%= render DS::Menu.new do |menu| %>
+            <% if unlinked_count > 0 %>
+              <% menu.with_item(
+                variant: "link",
+                text: t(".setup_accounts_menu"),
+                icon: "settings",
+                href: setup_accounts_epassbook_item_path(epassbook_item),
+                frame: :modal
+              ) %>
+            <% end %>
+            <% menu.with_item(
+              variant: "button",
+              text: t(".delete"),
+              icon: "trash-2",
+              href: epassbook_item_path(epassbook_item),
+              method: :delete,
+              confirm: CustomConfirm.for_resource_deletion(epassbook_item.institution_display_name, high_severity: true)
+            ) %>
+          <% end %>
+        </div>
+      <% end %>
+    </summary>
+
+    <% unless epassbook_item.scheduled_for_deletion? %>
+      <div class="space-y-4 mt-4">
+        <% if epassbook_item.accounts.any? %>
+          <%= render "accounts/index/account_groups", accounts: epassbook_item.accounts %>
+        <% end %>
+
+        <% if unlinked_count > 0 && epassbook_item.accounts.empty? %>
+          <div class="p-4 flex flex-col gap-3 items-center justify-center">
+            <p class="text-primary font-medium text-sm"><%= t(".setup_needed") %></p>
+            <p class="text-secondary text-sm"><%= t(".setup_description") %></p>
+            <%= render DS::Link.new(
+              text: t(".setup_action"),
+              icon: "settings",
+              variant: "primary",
+              href: setup_accounts_epassbook_item_path(epassbook_item),
+              frame: :modal
+            ) %>
+          </div>
+        <% elsif epassbook_item.accounts.empty? %>
+          <div class="p-4 flex flex-col gap-3 items-center justify-center">
+            <p class="text-primary font-medium text-sm"><%= t(".no_accounts_title") %></p>
+            <p class="text-secondary text-sm"><%= t(".no_accounts_description") %></p>
+          </div>
+        <% end %>
+
+        <% if unlinked_count > 0 && epassbook_item.accounts.any? %>
+          <div class="flex justify-center">
+            <%= render DS::Link.new(
+              text: t(".more_accounts_available", count: unlinked_count),
+              icon: "settings",
+              variant: "secondary",
+              href: setup_accounts_epassbook_item_path(epassbook_item),
+              frame: :modal
+            ) %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </details>
+<% end %>

@@ -479,6 +479,21 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :epassbook_items, only: %i[index new create destroy] do
+    collection do
+      get :select_existing_account
+      post :link_existing_account
+    end
+
+    member do
+      post :sync
+      get :otp
+      post :verify_otp
+      get :setup_accounts
+      post :complete_account_setup
+    end
+  end
+
   resources :simplefin_items, only: %i[index new create show edit update destroy] do
     collection do
       get :select_existing_account

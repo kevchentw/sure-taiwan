@@ -54,6 +54,10 @@ class Investment < ApplicationRecord
     "pillar_3a" => { short: "Pillar 3a", long: "Private Pension (Pillar 3a)", region: "eu", tax_treatment: :tax_deferred },
     "riester" => { short: "Riester", long: "Riester-Rente", region: "eu", tax_treatment: :tax_deferred },
 
+    # === Taiwan ===
+    "tw_brokerage" => { short: "證券帳戶", long: "台灣證券帳戶", region: "tw", tax_treatment: :taxable },
+    "tw_stock_savings" => { short: "定期定額", long: "台灣定期定額存股", region: "tw", tax_treatment: :taxable },
+
     # === Generic (available everywhere) ===
     "pension" => { short: "Pension", long: "Pension", region: nil, tax_treatment: :tax_deferred },
     "retirement" => { short: "Retirement", long: "Retirement Account", region: nil, tax_treatment: :tax_deferred },
@@ -91,7 +95,8 @@ class Investment < ApplicationRecord
       "CAD" => "ca",
       "AUD" => "au",
       "EUR" => "eu",
-      "CHF" => "eu"
+      "CHF" => "eu",
+      "TWD" => "tw"
     }.freeze
 
     # Returns subtypes grouped by region for use with grouped_options_for_select
