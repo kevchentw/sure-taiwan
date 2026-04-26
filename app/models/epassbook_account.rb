@@ -11,12 +11,13 @@ class EpassbookAccount < ApplicationRecord
   has_one :account_provider, as: :provider, dependent: :destroy
   has_one :account, through: :account_provider, source: :account
 
-  validates :account_subtype, presence: true, inclusion: { in: %w[stock bank] }
+  validates :account_subtype, presence: true, inclusion: { in: %w[stock bank fund] }
   validates :remote_id, presence: true
   validates :remote_id, uniqueness: { scope: :epassbook_item_id }
 
   scope :stock_accounts, -> { where(account_subtype: "stock") }
   scope :bank_accounts,  -> { where(account_subtype: "bank") }
+  scope :fund_accounts,  -> { where(account_subtype: "fund") }
 
   def current_account
     account
@@ -43,6 +44,10 @@ class EpassbookAccount < ApplicationRecord
 
   def bank?
     account_subtype == "bank"
+  end
+
+  def fund?
+    account_subtype == "fund"
   end
 
   def upsert_snapshot!(payload)

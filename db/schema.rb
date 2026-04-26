@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_12_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -475,6 +475,52 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_12_120000) do
     t.index ["import_locked"], name: "index_entries_on_import_locked_true", where: "(import_locked = true)"
     t.index ["parent_entry_id"], name: "index_entries_on_parent_entry_id"
     t.index ["user_modified"], name: "index_entries_on_user_modified_true", where: "(user_modified = true)"
+  end
+
+  create_table "epassbook_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "epassbook_item_id", null: false
+    t.string "account_subtype", null: false
+    t.string "remote_id", null: false
+    t.string "name"
+    t.string "currency", default: "TWD"
+    t.decimal "current_balance", precision: 19, scale: 4
+    t.string "broker_no"
+    t.string "broker_account"
+    t.string "broker_name"
+    t.string "bank_id"
+    t.string "account_no"
+    t.string "last_txn_post_date"
+    t.string "last_txn_ser_no"
+    t.jsonb "raw_payload"
+    t.jsonb "raw_transactions_payload"
+    t.jsonb "extra", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_subtype"], name: "index_epassbook_accounts_on_account_subtype"
+    t.index ["epassbook_item_id", "remote_id"], name: "index_epassbook_accounts_on_item_and_remote_id", unique: true
+    t.index ["epassbook_item_id"], name: "index_epassbook_accounts_on_epassbook_item_id"
+  end
+
+  create_table "epassbook_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "family_id", null: false
+    t.string "name"
+    t.string "institution_name", default: "台灣ePassbook"
+    t.string "institution_domain", default: "tdcc.com.tw"
+    t.string "institution_url", default: "https://www.tdcc.com.tw"
+    t.string "institution_color", default: "#D4343C"
+    t.string "status", default: "good"
+    t.boolean "scheduled_for_deletion", default: false
+    t.boolean "pending_account_setup", default: false
+    t.text "tdcc_user_id"
+    t.text "tdcc_password"
+    t.string "dev_id", null: false
+    t.text "token_id"
+    t.string "last_stock_update_time"
+    t.jsonb "raw_payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["family_id"], name: "index_epassbook_items_on_family_id"
+    t.index ["status"], name: "index_epassbook_items_on_status"
   end
 
   create_table "eval_datasets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1245,7 +1291,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_12_120000) do
     t.index ["kind"], name: "index_securities_on_kind"
     t.index ["price_provider", "offline_reason"], name: "index_securities_on_price_provider_and_offline_reason"
     t.index ["price_provider"], name: "index_securities_on_price_provider"
-    t.check_constraint "kind::text = ANY (ARRAY['standard'::character varying, 'cash'::character varying]::text[])", name: "chk_securities_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['standard'::character varying::text, 'cash'::character varying::text])", name: "chk_securities_kind"
   end
 
   create_table "security_prices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1402,8 +1448,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_12_120000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_sophtron_accounts_on_account_id"
-    t.index ["sophtron_item_id"], name: "index_sophtron_accounts_on_sophtron_item_id"
     t.index ["sophtron_item_id", "account_id"], name: "idx_unique_sophtron_accounts_per_item", unique: true
+    t.index ["sophtron_item_id"], name: "index_sophtron_accounts_on_sophtron_item_id"
   end
 
   create_table "sophtron_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1661,6 +1707,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_12_120000) do
   add_foreign_key "entries", "accounts", on_delete: :cascade
   add_foreign_key "entries", "entries", column: "parent_entry_id", on_delete: :cascade
   add_foreign_key "entries", "imports"
+  add_foreign_key "epassbook_accounts", "epassbook_items"
+  add_foreign_key "epassbook_items", "families"
   add_foreign_key "eval_results", "eval_runs"
   add_foreign_key "eval_results", "eval_samples"
   add_foreign_key "eval_runs", "eval_datasets"

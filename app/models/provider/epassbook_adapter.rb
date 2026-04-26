@@ -57,4 +57,8 @@ class Provider::EpassbookAdapter < Provider::Base
   def institution_color
     item&.institution_color
   end
+
+  def logo_url
+    nil
+  end
 end

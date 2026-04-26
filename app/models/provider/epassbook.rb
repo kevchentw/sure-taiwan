@@ -41,6 +41,7 @@ class Provider::Epassbook
   # ── Authentication ──
 
   def get_initial_token
+    @token_id = nil  # CM001 must be sent without an existing token
     result = request("CM001", {})
     @token_id = result["tokenID"] if result["tokenID"].present?
     result
@@ -108,21 +109,21 @@ class Provider::Epassbook
     request("TR001", { "lastUpdateTime" => last_update_time })
   end
 
-  def get_trade_detail(broker_no:, broker_account:, post_date:, txn_ser_no:, update_type: nil)
+  def get_trade_detail(broker_no:, broker_account:, post_date: nil, txn_ser_no: nil, update_type: nil)
     body = {
       "brokerNo" => broker_no,
-      "brokerAccount" => broker_account,
-      "postDate" => post_date,
-      "txnSerNo" => txn_ser_no
+      "brokerAccount" => broker_account
     }
-    body["updateType"] = update_type if update_type.present?
+    body["postDate"]    = post_date    if post_date.present?
+    body["txnSerNo"]    = txn_ser_no   if txn_ser_no.present?
+    body["updateType"]  = update_type  if update_type.present?
     request("TR002", body)
   end
 
   def get_all_trade_details(broker_no:, broker_account:, max_pages: 50)
     all_items = []
-    post_date = ""
-    txn_ser_no = ""
+    post_date = nil
+    txn_ser_no = nil
 
     max_pages.times do
       page = get_trade_detail(
@@ -138,9 +139,10 @@ class Provider::Epassbook
 
       all_items.concat(items)
 
+      # TR002 items are arrays: [0]=postDate, [1]=txnSerNo
       last = items.last
-      post_date = last["postDate"].to_s
-      txn_ser_no = last["txnSerNo"].to_s
+      post_date  = last[0].presence
+      txn_ser_no = last[1].presence
       break if items.length < 20
     end
 

@@ -1,0 +1,73 @@
+---
+zh-TW:
+  epassbook_items:
+    new:
+      title: 連結集保 e 存摺
+      tdcc_user_id_label: e 存摺帳號
+      tdcc_password_label: e 存摺密碼
+      connect: 連結
+      cancel: 取消
+    create:
+      success: 集保 e 存摺連結成功！帳戶正在背景同步中，稍後即可查看。
+      otp_sent: 驗證碼已傳送至您的註冊電子郵件，請在下方輸入。
+      errors:
+        unexpected: 發生非預期的錯誤，請再試一次。
+    destroy:
+      success: 集保 e 存摺連結將會被移除。
+    otp:
+      title: 電子郵件驗證
+      description: 請輸入傳送至您註冊電子郵件地址的驗證碼。
+      otp_code_label: 驗證碼
+      verify: 驗證
+      cancel: 取消
+    verify_otp:
+      success: 驗證成功！帳戶正在背景同步中。
+      errors:
+        no_credentials: 找不到憑證，請重新連結您的 e 存摺帳號。
+        unexpected: 驗證失敗，請再試一次。
+    setup_accounts:
+      title: 設定 e 存摺帳戶
+      no_accounts: 目前沒有待設定的帳戶，同步可能仍在進行中，請稍後再試。
+      back: 返回帳戶列表
+      stock_account: 證券帳戶
+      bank_account: 銀行帳戶
+      account_type_label: 帳戶類型
+      subtype_label: 帳戶子類型
+      skip: 略過此帳戶
+      investment_type: 投資帳戶
+      depository_type: 銀行 / 存款帳戶
+      create_accounts: 建立帳戶
+      cancel: 取消
+    complete_account_setup:
+      success:
+        one: 成功建立 %{count} 個帳戶！交易與持股正在匯入中。
+        other: 成功建立 %{count} 個帳戶！交易與持股正在匯入中。
+    select_existing_account:
+      title: "將 e 存摺連結至 %{account_name}"
+      no_accounts_found: 找不到未連結的 e 存摺帳戶，請先執行同步。
+      stock_account: 證券
+      bank_account: 銀行
+      link_account: 連結
+      cancel: 取消
+    link_existing_account:
+      success: 帳戶已成功連結至 e 存摺。
+      errors:
+        invalid_epassbook_account: 所選的 e 存摺帳戶無效。
+    epassbook_item:
+      deletion_in_progress: （刪除中...）
+      syncing: 同步中...
+      requires_update: 重新連結
+      error: 同步時發生錯誤
+      status: 上次同步於 %{timestamp} 前
+      status_never: 從未同步
+      status_with_summary: "上次同步於 %{timestamp} 前・%{summary}"
+      setup_needed: 有新帳戶待設定
+      setup_description: 請為新匯入的 e 存摺帳戶選擇帳戶類型。
+      setup_action: 設定新帳戶
+      setup_accounts_menu: 設定帳戶
+      more_accounts_available:
+        one: "還有 %{count} 個帳戶可供設定"
+        other: "還有 %{count} 個帳戶可供設定"
+      no_accounts_title: 找不到帳戶
+      no_accounts_description: 此連線尚無任何已同步的帳戶。
+      delete: 刪除

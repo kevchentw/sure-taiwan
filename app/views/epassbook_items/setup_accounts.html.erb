@@ -18,15 +18,21 @@
 
         <div class="space-y-4">
           <% @epassbook_accounts.each do |ea| %>
-            <% default_type    = ea.stock? ? "Investment" : "Depository" %>
-            <% default_subtype = ea.stock? ? "tw_brokerage" : "checking" %>
+            <% default_type    = (ea.stock? || ea.fund?) ? "Investment" : "Depository" %>
+            <% default_subtype = ea.stock? ? "tw_brokerage" : (ea.fund? ? "tw_mutual_fund" : "checking") %>
 
             <div class="border border-primary rounded-lg p-4">
               <div class="mb-3">
                 <h3 class="font-medium text-primary"><%= ea.display_name %></h3>
                 <p class="text-sm text-secondary">
                   <%= ea.currency %> •
-                  <%= ea.stock? ? t(".stock_account") : t(".bank_account") %>
+                  <% if ea.stock? %>
+                    <%= t(".stock_account") %>
+                  <% elsif ea.fund? %>
+                    基金帳戶
+                  <% else %>
+                    <%= t(".bank_account") %>
+                  <% end %>
                   <% if ea.current_balance.present? %>
                     • <%= number_to_currency(ea.current_balance, unit: ea.currency) %>
                   <% end %>
@@ -48,7 +54,7 @@
 
                 <div>
                   <%= label_tag "account_subtypes[#{ea.id}]", t(".subtype_label"), class: "block text-sm font-medium text-primary mb-1" %>
-                  <% if ea.stock? %>
+                  <% if ea.stock? || ea.fund? %>
                     <%= select_tag "account_subtypes[#{ea.id}]",
                                    options_for_select(@investment_subtype_options, default_subtype),
                                    class: "appearance-none bg-container border border-primary rounded-md px-3 py-2 text-sm w-full" %>

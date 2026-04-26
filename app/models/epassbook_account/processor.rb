@@ -36,6 +36,8 @@ class EpassbookAccount::Processor
       process_stock_account(account)
     elsif epassbook_account.bank?
       process_bank_account(account)
+    elsif epassbook_account.fund?
+      process_fund_account(account)
     end
   end
 
@@ -46,24 +48,31 @@ class EpassbookAccount::Processor
     def process_stock_account(account)
       process_stock_holdings(account)
       process_stock_trades(account)
+
+      total = epassbook_account.current_balance || 0
+      account.assign_attributes(balance: total, currency: "TWD")
+      account.save!
+      account.set_current_balance(total)
     end
 
     def process_stock_holdings(account)
       payload     = epassbook_account.raw_payload || {}
+      # TR001 items are arrays: [0]=stockNo, [1]=stockName, [7]=qty, [17]=price, [19]=currency
       stock_items = payload["items"] || []
       date        = Date.current
       ap          = epassbook_account.account_provider
 
+      Rails.logger.info("EpassbookAccount::Processor #{epassbook_account.id} - #{stock_items.length} stock items in payload")
+
       stock_items.each do |item|
-        stock_no   = item["stockNo"].to_s.strip
-        stock_name = item["stockName"].to_s.strip
-        exchange   = item["stockExcg"].to_s.strip
-        qty        = item["stockUnit"].to_d
-        price      = item["stockPrice"].to_s.delete(",").to_d
+        stock_no   = item[0].to_s.strip
+        stock_name = item[1].to_s.strip
+        qty        = item[7].to_d
+        price      = item[17].to_s.delete(",").to_d
 
         next if stock_no.blank? || qty.zero?
 
-        security = resolve_security(stock_no, stock_name, exchange)
+        security = resolve_security(stock_no, stock_name, nil)
         next unless security
 
         holding = account.holdings.find_or_initialize_by(
@@ -79,7 +88,7 @@ class EpassbookAccount::Processor
         )
         holding.save!
       rescue StandardError => e
-        Rails.logger.error("EpassbookAccount::Processor - holding #{item["stockNo"]} failed: #{e.message}")
+        Rails.logger.error("EpassbookAccount::Processor - holding #{item[0]} failed: #{e.message}")
       end
     end
 
@@ -91,15 +100,18 @@ class EpassbookAccount::Processor
     end
 
     def process_single_trade(account, trade)
-      post_date  = trade["postDate"].to_s   # "20260401"
-      txn_ser_no = trade["txnSerNo"].to_s
-      stock_no   = trade["stockNo"].to_s.strip
-      stock_name = trade["stockName"].to_s.strip
-      exchange   = trade["stockExcg"].to_s.strip
-      txn_name   = trade["txnName"].to_s
-      shares     = trade["txnSHR"].to_d
-      price      = trade["price"].to_s.delete(",").to_d
-      db_cr      = trade["dbCRCode"].to_s  # "D"=debit/buy, "C"=credit/sell
+      # TR002 items are arrays — field positions from TR002_FIELDS:
+      # [0]=postDate, [1]=txnSerNo, [2]=stockNo, [3]=stockName, [4]=stockExcg,
+      # [11]=txnName, [12]=txnSHR, [14]=dbCRCode, [18]=price
+      post_date  = trade[0].to_s
+      txn_ser_no = trade[1].to_s
+      stock_no   = trade[2].to_s.strip
+      stock_name = trade[3].to_s.strip
+      exchange   = trade[4].to_s.strip
+      txn_name   = trade[11].to_s
+      shares     = trade[12].to_d
+      db_cr      = trade[14].to_s
+      price      = trade[18].to_s.delete(",").to_d
 
       return if stock_no.blank? || shares.zero?
 
@@ -136,7 +148,49 @@ class EpassbookAccount::Processor
         )
       )
     rescue StandardError => e
-      Rails.logger.error("EpassbookAccount::Processor - trade #{trade["postDate"]}:#{trade["txnSerNo"]} failed: #{e.message}")
+      Rails.logger.error("EpassbookAccount::Processor - trade #{trade[0]}:#{trade[1]} failed: #{e.message}")
+    end
+
+    # ── Fund (TR051V1 holdings) ──
+
+    def process_fund_account(account)
+      payload      = epassbook_account.raw_payload || {}
+      fund_details = payload["fundDetails"] || []
+      date         = Date.current
+      ap           = epassbook_account.account_provider
+
+      fund_details.each do |fund|
+        fund_no   = fund["fundNo"].to_s.strip
+        fund_name = fund["fundCHName"].to_s.strip
+        qty       = fund["fundSHR"].to_s.delete(",").to_d
+        price     = fund["navValue"].to_s.delete(",").to_d
+        currency  = fund["currAlias"].presence || "TWD"
+
+        next if fund_no.blank? || qty.zero?
+
+        security = resolve_fund_security(fund_no, fund_name)
+        next unless security
+
+        holding = account.holdings.find_or_initialize_by(
+          security: security,
+          date: date,
+          currency: currency
+        )
+        holding.assign_attributes(
+          qty: qty,
+          price: price,
+          amount: (qty * price).round(2),
+          account_provider: ap
+        )
+        holding.save!
+      rescue StandardError => e
+        Rails.logger.error("EpassbookAccount::Processor - fund holding #{fund_no} failed: #{e.message}")
+      end
+
+      total = epassbook_account.current_balance || 0
+      account.assign_attributes(balance: total, currency: "TWD")
+      account.save!
+      account.set_current_balance(total)
     end
 
     # ── Bank (TSP007 transactions) ──
@@ -193,10 +247,20 @@ class EpassbookAccount::Processor
         s.name                   = stock_name.presence || stock_no
         s.exchange_operating_mic = mic
         s.country_code           = "TW"
-        s.currency               = "TWD"
       end
     rescue StandardError => e
       Rails.logger.warn("EpassbookAccount::Processor - could not resolve security #{stock_no}: #{e.message}")
+      nil
+    end
+
+    def resolve_fund_security(fund_no, fund_name)
+      Security.find_or_create_by!(ticker: fund_no) do |s|
+        s.name                   = fund_name.presence || fund_no
+        s.exchange_operating_mic = DEFAULT_MIC
+        s.country_code           = "TW"
+      end
+    rescue StandardError => e
+      Rails.logger.warn("EpassbookAccount::Processor - could not resolve fund #{fund_no}: #{e.message}")
       nil
     end
 
