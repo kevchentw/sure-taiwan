@@ -218,8 +218,8 @@ class EpassbookAccount::Processor
       return if account.entries.exists?(external_id: external_id)
 
       date = Date.parse(txn_dt[0, 10])
-      amount = in_amt.nonzero? ? in_amt : -out_amt
-      name   = summary.presence || memo.presence || (amount.positive? ? "存入" : "提出")
+      amount = out_amt.nonzero? ? out_amt : -in_amt
+      name   = summary.presence || memo.presence || (amount.positive? ? "提出" : "存入")
 
       account.entries.create!(
         date:        date,
