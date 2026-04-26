@@ -57,6 +57,7 @@ class Investment < ApplicationRecord
     # === Taiwan ===
     "tw_brokerage" => { short: "證券帳戶", long: "台灣證券帳戶", region: "tw", tax_treatment: :taxable },
     "tw_stock_savings" => { short: "定期定額", long: "台灣定期定額存股", region: "tw", tax_treatment: :taxable },
+    "tw_mutual_fund" => { short: "基金", long: "台灣基金帳戶", region: "tw", tax_treatment: :taxable },
 
     # === Generic (available everywhere) ===
     "pension" => { short: "Pension", long: "Pension", region: nil, tax_treatment: :tax_deferred },

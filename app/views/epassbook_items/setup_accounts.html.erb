@@ -29,7 +29,7 @@
                   <% if ea.stock? %>
                     <%= t(".stock_account") %>
                   <% elsif ea.fund? %>
-                    基金帳戶
+                    <%= t(".fund_account") %>
                   <% else %>
                     <%= t(".bank_account") %>
                   <% end %>

@@ -1,6 +1,22 @@
 ---
 zh-TW:
   depositories:
+    subtypes:
+      checking:
+        short: 支票帳戶
+        long: 支票帳戶
+      savings:
+        short: 儲蓄帳戶
+        long: 儲蓄帳戶
+      hsa:
+        short: HSA
+        long: 健康儲蓄帳戶
+      cd:
+        short: 定存
+        long: 定期存款
+      money_market:
+        short: 貨幣市場
+        long: 貨幣市場帳戶
     edit:
       edit: 編輯 %{account}
     form:

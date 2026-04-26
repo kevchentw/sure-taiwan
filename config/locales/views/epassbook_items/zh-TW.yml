@@ -31,6 +31,7 @@ zh-TW:
       back: 返回帳戶列表
       stock_account: 證券帳戶
       bank_account: 銀行帳戶
+      fund_account: 基金帳戶
       account_type_label: 帳戶類型
       subtype_label: 帳戶子類型
       skip: 略過此帳戶
