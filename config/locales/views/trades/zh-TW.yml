@@ -25,6 +25,7 @@ zh-TW:
     show:
       additional: 額外資訊
       cost_per_share_label: 每股成本
+      fetch_price_label: 以收盤價估算
       date_label: 日期
       delete: 刪除
       delete_subtitle: 此操作將無法復原

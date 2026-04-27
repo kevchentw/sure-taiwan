@@ -9,7 +9,7 @@ class Import < ApplicationRecord
 
   DOCUMENT_TYPES = %w[bank_statement credit_card_statement investment_statement financial_document contract other].freeze
 
-  TYPES = %w[TransactionImport TradeImport AccountImport MintImport CategoryImport RuleImport PdfImport QifImport SureImport].freeze
+  TYPES = %w[TransactionImport TradeImport TradePriceUpdateImport AccountImport MintImport CategoryImport RuleImport PdfImport QifImport SureImport].freeze
   SIGNAGE_CONVENTIONS = %w[inflows_positive inflows_negative]
   SEPARATORS = [ [ "Comma (,)", "," ], [ "Semicolon (;)", ";" ] ].freeze
 
@@ -205,11 +205,13 @@ class Import < ApplicationRecord
     mapped_rows = csv_rows.map do |row|
       {
         account: row[account_col_label].to_s,
+        external_id: row[external_id_col_label].to_s,
         date: row[date_col_label].to_s,
         qty: sanitize_number(row[qty_col_label]).to_s,
         ticker: row[ticker_col_label].to_s,
         exchange_operating_mic: row[exchange_operating_mic_col_label].to_s,
         price: sanitize_number(row[price_col_label]).to_s,
+        fee: sanitize_number(row[fee_col_label]).to_s,
         amount: sanitize_number(row[amount_col_label]).to_s,
         currency: (row[currency_col_label] || default_currency).to_s,
         name: (row[name_col_label] || default_row_name).to_s,
@@ -292,7 +294,8 @@ class Import < ApplicationRecord
       import_template.attributes.slice(
         "date_col_label", "amount_col_label", "name_col_label",
         "category_col_label", "tags_col_label", "account_col_label",
-        "qty_col_label", "ticker_col_label", "price_col_label",
+        "qty_col_label", "ticker_col_label", "price_col_label", "fee_col_label",
+        "external_id_col_label",
         "entity_type_col_label", "notes_col_label", "currency_col_label",
         "date_format", "signage_convention", "number_format",
         "exchange_operating_mic_col_label",

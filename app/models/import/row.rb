@@ -2,11 +2,14 @@ class Import::Row < ApplicationRecord
   belongs_to :import, counter_cache: true
 
   validates :amount, numericality: true, allow_blank: true
+  validates :price, numericality: { greater_than: 0 }, allow_blank: true, if: -> { import.required_column_keys.include?(:price) }
+  validates :fee, numericality: { greater_than_or_equal_to: 0 }, allow_blank: true, if: -> { import.is_a?(TradePriceUpdateImport) }
   validates :currency, presence: true
 
   validate :date_valid
   validate :required_columns
   validate :currency_is_valid
+  validate :trade_price_update_entry_exists, if: -> { import.is_a?(TradePriceUpdateImport) }
 
   scope :ordered, -> { order(:id) }
 
@@ -106,5 +109,11 @@ class Import::Row < ApplicationRecord
       rescue Money::Currency::UnknownCurrencyError
         errors.add(:currency, "is not a valid currency code")
       end
+    end
+
+    def trade_price_update_entry_exists
+      return if external_id.blank?
+
+      errors.add(:external_id, "does not match an existing trade") unless import.trade_entry_for_external_id(external_id)
     end
 end

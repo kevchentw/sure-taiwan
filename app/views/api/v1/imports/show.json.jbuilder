@@ -15,6 +15,11 @@ json.data do
     json.tags_col_label @import.tags_col_label
     json.notes_col_label @import.notes_col_label
     json.account_col_label @import.account_col_label
+    json.qty_col_label @import.qty_col_label
+    json.ticker_col_label @import.ticker_col_label
+    json.external_id_col_label @import.external_id_col_label
+    json.price_col_label @import.price_col_label
+    json.fee_col_label @import.fee_col_label
     json.date_format @import.date_format
     json.number_format @import.number_format
     json.signage_convention @import.signage_convention

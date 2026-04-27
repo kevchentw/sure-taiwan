@@ -195,6 +195,17 @@
                 disabled_message: requires_account_message %>
             <% end %>
 
+            <% if params[:type].nil? || params[:type] == "TradePriceUpdateImport" %>
+              <%= render "imports/import_option",
+                type: "TradePriceUpdateImport",
+                icon_name: "circle-dollar-sign",
+                icon_bg_class: "bg-emerald-500/5",
+                icon_text_class: "text-emerald-500",
+                label: t(".import_trade_price_updates"),
+                enabled: has_accounts,
+                disabled_message: requires_account_message %>
+            <% end %>
+
             <% if params[:type].nil? || params[:type] == "AccountImport" %>
               <%= render "imports/import_option",
                 type: "AccountImport",

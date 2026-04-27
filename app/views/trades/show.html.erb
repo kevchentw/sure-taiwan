@@ -53,15 +53,29 @@
                     disabled: @entry.linked? %>
               <% end %>
             </div>
-            <%= f.fields_for :entryable do |ef| %>
-              <%= ef.money_field :price,
-                    label: t(".cost_per_share_label"),
-                    disable_currency: true,
-                    auto_submit: true,
-                    min: 0,
-                    step: "any",
-                    disabled: @entry.linked? %>
-            <% end %>
+            <% price_locked = @entry.linked? && @entry.source != "epassbook" %>
+            <div data-controller="trade-price-fetch"
+                 data-trade-price-fetch-url-value="<%= estimated_price_trade_path(@entry) %>">
+              <%= f.fields_for :entryable do |ef| %>
+                <%= ef.money_field :price,
+                      label: t(".cost_per_share_label"),
+                      disable_currency: true,
+                      auto_submit: true,
+                      min: 0,
+                      step: "any",
+                      disabled: price_locked,
+                      amount_data: { "trade-price-fetch-target": "price" } %>
+              <% end %>
+              <% unless price_locked %>
+                <button type="button"
+                        data-trade-price-fetch-target="button"
+                        data-action="click->trade-price-fetch#fetch"
+                        class="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-secondary text-secondary hover:bg-surface-hover transition-colors disabled:opacity-50">
+                  <%= icon "sparkles", size: "xs" %>
+                  <%= t(".fetch_price_label") %>
+                </button>
+              <% end %>
+            </div>
             <%= f.fields_for :entryable do |ef| %>
               <%= ef.money_field :fee,
                     label: t(".fee_label"),
@@ -69,7 +83,7 @@
                     auto_submit: true,
                     min: 0,
                     step: "any",
-                    disabled: @entry.linked? %>
+                    disabled: price_locked %>
             <% end %>
           <% end %>
         <% end %>

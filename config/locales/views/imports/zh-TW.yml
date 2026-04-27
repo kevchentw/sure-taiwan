@@ -137,6 +137,7 @@ zh-TW:
     type_labels:
       transaction_import: 交易匯入
       trade_import: 投資交易匯入
+      trade_price_update_import: 投資交易成本價更新匯入
       account_import: 帳戶匯入
       mint_import: Mint 匯入
       qif_import: QIF 匯入
@@ -171,6 +172,8 @@ zh-TW:
       ticker: 代號
       exchange: 交易所
       price: 價格
+      fee: 手續費
+      external_id: 外部 ID
       type: 類型
       parent_category: 上層類別
       color: 顏色
@@ -183,6 +186,7 @@ zh-TW:
       rules: 規則
       merchants: 商家
       trades: 投資交易
+      trade_price_updates: 交易成本價更新
       valuations: 估值
       budgets: 預算
       budget_categories: 預算類別
@@ -211,6 +215,7 @@ zh-TW:
       entity_type: 實體類型
       expense_outflow: 支出（流出）
       format: 格式
+      fee: 手續費
       income_inflow: 收入（流入）
       incomes_negative: 收入為負數
       incomes_positive: 收入為正數
@@ -220,6 +225,7 @@ zh-TW:
       note: 注意：
       notes: 備註
       price: 價格
+      external_id: 外部 ID
       quantity: 數量
       security_provider_not_configured: 尚未設定證券價格提供者。您的投資交易仍可匯入，但 Sure 不會回補歷史價格。請前往設定完成此項設定。
       select_column: 選擇欄位
@@ -237,8 +243,6 @@ zh-TW:
     index:
       title: 匯入紀錄
       new: 新增匯入
-      bulk_price_update_title: 批次更新交易成本價
-      bulk_price_update_submit: 更新成本價
     table:
       title: 匯入紀錄
       header:
@@ -250,6 +254,7 @@ zh-TW:
         type_labels:
           transaction_import: 交易
           trade_import: 投資交易
+          trade_price_update_import: 交易成本價更新
           account_import: 帳戶
           mint_import: Mint
           qif_import: QIF
@@ -281,6 +286,7 @@ zh-TW:
       import_categories: 匯入類別
       import_mint: 從 Mint 匯入
       import_portfolio: 匯入投資
+      import_trade_price_updates: 更新交易成本價
       import_rules: 匯入規則
       import_transactions: 匯入交易紀錄
       import_qif: 從 Quicken 匯入 (QIF)

@@ -27,7 +27,7 @@ class Rule::ConditionFilter
   end
 
   def label
-    key.humanize
+    I18n.t("rules.condition_filters.labels.#{key}", default: key.humanize)
   end
 
   def options
@@ -35,7 +35,9 @@ class Rule::ConditionFilter
   end
 
   def operators
-    OPERATORS_MAP.dig(type)
+    OPERATORS_MAP.dig(type).map do |label, value|
+      [ I18n.t("rules.condition_filters.operators.#{value}", default: label), value ]
+    end
   end
 
   # Matchers can prepare the scope with joins by implementing this method

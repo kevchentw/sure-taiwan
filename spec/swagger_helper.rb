@@ -363,6 +363,11 @@ RSpec.configure do |config|
               tags_col_label: { type: :string, nullable: true },
               notes_col_label: { type: :string, nullable: true },
               account_col_label: { type: :string, nullable: true },
+              qty_col_label: { type: :string, nullable: true },
+              ticker_col_label: { type: :string, nullable: true },
+              external_id_col_label: { type: :string, nullable: true },
+              price_col_label: { type: :string, nullable: true },
+              fee_col_label: { type: :string, nullable: true },
               date_format: { type: :string, nullable: true },
               number_format: { type: :string, nullable: true },
               signage_convention: { type: :string, nullable: true }
@@ -380,7 +385,7 @@ RSpec.configure do |config|
             required: %w[id type status created_at updated_at],
             properties: {
               id: { type: :string, format: :uuid },
-              type: { type: :string, enum: %w[TransactionImport TradeImport AccountImport MintImport CategoryImport RuleImport] },
+              type: { type: :string, enum: %w[TransactionImport TradeImport TradePriceUpdateImport AccountImport MintImport CategoryImport RuleImport] },
               status: { type: :string, enum: %w[pending complete importing reverting revert_failed failed] },
               created_at: { type: :string, format: :'date-time' },
               updated_at: { type: :string, format: :'date-time' },
@@ -394,7 +399,7 @@ RSpec.configure do |config|
             required: %w[id type status created_at updated_at],
             properties: {
               id: { type: :string, format: :uuid },
-              type: { type: :string, enum: %w[TransactionImport TradeImport AccountImport MintImport CategoryImport RuleImport] },
+              type: { type: :string, enum: %w[TransactionImport TradeImport TradePriceUpdateImport AccountImport MintImport CategoryImport RuleImport] },
               status: { type: :string, enum: %w[pending complete importing reverting revert_failed failed] },
               created_at: { type: :string, format: :'date-time' },
               updated_at: { type: :string, format: :'date-time' },

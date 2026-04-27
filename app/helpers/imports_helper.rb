@@ -21,7 +21,9 @@ module ImportsHelper
       qty: I18n.t("imports.column_labels.quantity"),
       ticker: I18n.t("imports.column_labels.ticker"),
       exchange: I18n.t("imports.column_labels.exchange"),
+      exchange_operating_mic: I18n.t("imports.column_labels.exchange"),
       price: I18n.t("imports.column_labels.price"),
+      fee: I18n.t("imports.column_labels.fee"),
       external_id: I18n.t("imports.column_labels.external_id"),
       entity_type: I18n.t("imports.column_labels.type"),
       category_parent: I18n.t("imports.column_labels.parent_category"),
@@ -41,7 +43,7 @@ module ImportsHelper
       trades: DryRunResource.new(label: I18n.t("imports.resources.trades"), icon: "arrow-left-right", text_class: "text-emerald-500", bg_class: "bg-emerald-500/5"),
       valuations: DryRunResource.new(label: I18n.t("imports.resources.valuations"), icon: "trending-up", text_class: "text-pink-500", bg_class: "bg-pink-500/5"),
       budgets: DryRunResource.new(label: I18n.t("imports.resources.budgets"), icon: "wallet", text_class: "text-indigo-500", bg_class: "bg-indigo-500/5"),
-      budget_categories: DryRunResource.new(label: I18n.t("imports.resources.budget_categories"), icon: "pie-chart", text_class: "text-teal-500", bg_class: "bg-teal-500/5")
+      budget_categories: DryRunResource.new(label: I18n.t("imports.resources.budget_categories"), icon: "pie-chart", text_class: "text-teal-500", bg_class: "bg-teal-500/5"),
       trade_price_updates: DryRunResource.new(label: I18n.t("imports.resources.trade_price_updates"), icon: "circle-dollar-sign", text_class: "text-emerald-500", bg_class: "bg-emerald-500/5"),
     }
 

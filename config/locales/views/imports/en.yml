@@ -151,6 +151,7 @@ en:
     type_labels:
       transaction_import: "Transaction import"
       trade_import: "Trade import"
+      trade_price_update_import: "Trade price update import"
       account_import: "Account import"
       mint_import: "Mint import"
       qif_import: "QIF import"
@@ -185,6 +186,8 @@ en:
       ticker: Ticker
       exchange: Exchange
       price: Price
+      fee: Fee
+      external_id: External ID
       type: Type
       parent_category: Parent category
       color: Color
@@ -197,6 +200,7 @@ en:
       rules: Rules
       merchants: Merchants
       trades: Trades
+      trade_price_updates: Trade price updates
       valuations: Valuations
       budgets: Budgets
       budget_categories: Budget Categories
@@ -225,6 +229,7 @@ en:
       entity_type: Entity Type
       expense_outflow: Expense (outflow)
       format: Format
+      fee: Fee
       income_inflow: Income (inflow)
       incomes_negative: Incomes are negative
       incomes_positive: Incomes are positive
@@ -234,6 +239,7 @@ en:
       note: "Note:"
       notes: Notes
       price: Price
+      external_id: External ID
       quantity: Quantity
       security_provider_not_configured: The security prices provider is not configured. Your trade imports will work, but Sure will not backfill price history. Please go to your settings to configure this.
       select_column: Select column
@@ -251,8 +257,6 @@ en:
     index:
       title: Imports
       new: New Import
-      bulk_price_update_title: Batch Update Trade Prices
-      bulk_price_update_submit: Update Prices
     table:
       title: Imports
       header:
@@ -264,6 +268,7 @@ en:
         type_labels:
           transaction_import: "Transaction"
           trade_import: "Trade"
+          trade_price_update_import: "Trade price update"
           account_import: "Account"
           mint_import: "Mint"
           qif_import: "QIF"
@@ -295,6 +300,7 @@ en:
       import_categories: Import categories
       import_mint: Import from Mint
       import_portfolio: Import investments
+      import_trade_price_updates: Update trade prices
       import_rules: Import rules
       import_transactions: Import transactions
       import_qif: Import from Quicken (QIF)

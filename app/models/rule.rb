@@ -102,7 +102,12 @@ class Rule < ApplicationRecord
     condition = displayed_condition
     return I18n.t("rules.no_condition") if condition.blank?
 
-    "If #{condition.filter.label.downcase} #{condition.operator} #{condition.value_display}"
+    I18n.t(
+      "rules.rule.primary_condition_title",
+      filter: condition.filter.label.downcase,
+      operator: condition.operator_display,
+      value: condition.value_display
+    )
   end
 
   def displayed_condition

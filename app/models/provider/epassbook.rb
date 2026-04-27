@@ -111,13 +111,19 @@ class Provider::Epassbook
 
   def get_trade_detail(broker_no:, broker_account:, post_date: nil, txn_ser_no: nil, update_type: nil)
     body = {
-      "brokerNo" => broker_no,
-      "brokerAccount" => broker_account
+      "brokerNo"      => broker_no,
+      "brokerAccount" => broker_account,
+      "postDate"      => post_date.to_s,
+      "txnSerNo"      => txn_ser_no.to_s
     }
-    body["postDate"]    = post_date    if post_date.present?
-    body["txnSerNo"]    = txn_ser_no   if txn_ser_no.present?
-    body["updateType"]  = update_type  if update_type.present?
-    request("TR002", body)
+    body["updateType"] = update_type if update_type.present?
+    data = request_full("TR002", body)
+    code = data.dig("responseHeader", "returnCode").to_s
+    # D0002 = "no update data" — APK treats it as valid and reads items from body
+    unless %w[0000 D0002].include?(code)
+      raise EpassbookError.new(code, data.dig("responseHeader", "returnMsg") || "Unknown error")
+    end
+    data["responseBody"] || {}
   end
 
   def get_all_trade_details(broker_no:, broker_account:, max_pages: 50)
@@ -131,7 +137,7 @@ class Provider::Epassbook
         broker_account: broker_account,
         post_date: post_date,
         txn_ser_no: txn_ser_no,
-        update_type: post_date.present? ? "B" : nil
+        update_type: "B"
       )
 
       items = page["items"] || []
@@ -162,6 +168,15 @@ class Provider::Epassbook
 
   def get_personal_fund_info(last_update_time: DEFAULT_SERVER_TIME)
     request("TR051V1", { "lastUpdateTime" => last_update_time })
+  end
+
+  def get_personal_fund_detail(sale_org_code:, sale_org_code_short: "", start_date:, end_date:)
+    request("TR052", {
+      "saleOrgCode" => sale_org_code,
+      "saleOrgCodeShort" => sale_org_code_short,
+      "sDate" => start_date,
+      "eDate" => end_date
+    })
   end
 
   # ── Bank / Open Banking (TSP) ──

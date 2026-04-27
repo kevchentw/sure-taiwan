@@ -1,6 +1,6 @@
 class EpassbookItemsController < ApplicationController
-  before_action :set_epassbook_item, only: [ :destroy, :sync, :otp, :verify_otp, :setup_accounts, :complete_account_setup ]
-  before_action :require_admin!, only: [ :new, :create, :destroy, :sync, :otp, :verify_otp, :select_existing_account, :link_existing_account, :setup_accounts, :complete_account_setup ]
+  before_action :set_epassbook_item, only: [ :destroy, :sync, :request_otp, :otp, :verify_otp, :setup_accounts, :complete_account_setup ]
+  before_action :require_admin!, only: [ :new, :create, :destroy, :sync, :request_otp, :otp, :verify_otp, :select_existing_account, :link_existing_account, :setup_accounts, :complete_account_setup ]
 
   def index
     @epassbook_items = Current.family.epassbook_items.active.ordered
@@ -59,6 +59,25 @@ class EpassbookItemsController < ApplicationController
     respond_to do |format|
       format.html { redirect_back_or_to accounts_path }
       format.json { head :ok }
+    end
+  end
+
+  def request_otp
+    unless @epassbook_item.credentials_configured?
+      return redirect_to accounts_path, alert: t(".errors.no_credentials"), status: :see_other
+    end
+
+    begin
+      client = Provider::Epassbook.new(dev_id: @epassbook_item.dev_id)
+      client.login(user_id: @epassbook_item.tdcc_user_id, password: @epassbook_item.tdcc_password)
+      @epassbook_item.save_token!(client.token_id)
+      client.request_email_otp(user_id: @epassbook_item.tdcc_user_id)
+      redirect_to otp_epassbook_item_path(@epassbook_item), notice: t(".otp_sent"), status: :see_other
+    rescue Provider::Epassbook::EpassbookError => e
+      redirect_to accounts_path, alert: e.message, status: :see_other
+    rescue => e
+      Rails.logger.error("EpassbookItemsController#request_otp: #{e.class} - #{e.message}")
+      redirect_to accounts_path, alert: t(".errors.unexpected"), status: :see_other
     end
   end
 

@@ -14,6 +14,11 @@ en:
         unexpected: An unexpected error occurred. Please try again.
     destroy:
       success: ePassbook connection will be removed.
+    request_otp:
+      otp_sent: A verification code has been sent to your registered email. Please enter it below.
+      errors:
+        no_credentials: Credentials not found. Please reconnect your ePassbook account.
+        unexpected: An unexpected error occurred. Please try again.
     otp:
       title: Email Verification
       description: Enter the verification code sent to your registered email address.
@@ -61,6 +66,7 @@ en:
         other: "%{count} accounts synced"
       partial_sync: "%{linked_count} synced, %{unlinked_count} need setup"
     epassbook_item:
+      send_otp: Re-verify
       deletion_in_progress: "(deletion in progress...)"
       syncing: Syncing...
       requires_update: Reconnect

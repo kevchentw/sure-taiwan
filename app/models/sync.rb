@@ -71,7 +71,7 @@ class Sync < ApplicationRecord
       unless syncable.present?
         Rails.logger.warn("Sync #{id} - syncable #{syncable_type}##{syncable_id} no longer exists. Marking as failed.")
         start! if may_start?
-        fail!
+        fail! if may_fail?
         update(error: "Syncable record was deleted")
         return
       end
@@ -80,7 +80,7 @@ class Sync < ApplicationRecord
       if syncable.respond_to?(:scheduled_for_deletion?) && syncable.scheduled_for_deletion?
         Rails.logger.warn("Sync #{id} - syncable #{syncable_type}##{syncable_id} is scheduled for deletion. Skipping sync.")
         start! if may_start?
-        fail!
+        fail! if may_fail?
         update(error: "Syncable record is scheduled for deletion")
         return
       end
@@ -90,7 +90,7 @@ class Sync < ApplicationRecord
       begin
         syncable.perform_sync(self)
       rescue => e
-        fail!
+        fail! if may_fail?
         update(error: e.message)
         report_error(e)
       ensure

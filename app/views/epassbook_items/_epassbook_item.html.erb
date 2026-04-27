@@ -31,14 +31,24 @@
               <%= tag.span t(".syncing") %>
             </div>
           <% elsif epassbook_item.requires_update? %>
-            <div class="text-warning flex items-center gap-1">
+            <div class="text-warning flex items-center gap-2">
               <%= icon "alert-triangle", size: "sm", color: "warning" %>
               <%= tag.span t(".requires_update") %>
+              <% if Current.user&.admin? %>
+                <%= button_to t(".send_otp"), request_otp_epassbook_item_path(epassbook_item),
+                    method: :post,
+                    class: "text-xs text-primary underline underline-offset-2 hover:no-underline" %>
+              <% end %>
             </div>
           <% elsif epassbook_item.sync_error.present? %>
-            <div class="text-secondary flex items-center gap-1">
+            <div class="text-secondary flex items-center gap-2">
               <%= render DS::Tooltip.new(text: epassbook_item.sync_error, icon: "alert-circle", size: "sm", color: "destructive") %>
               <%= tag.span t(".error"), class: "text-destructive" %>
+              <% if Current.user&.admin? && epassbook_item.sync_error.to_s.include?("DIFF_DEVICE") %>
+                <%= button_to t(".send_otp"), request_otp_epassbook_item_path(epassbook_item),
+                    method: :post,
+                    class: "text-xs text-primary underline underline-offset-2 hover:no-underline" %>
+              <% end %>
             </div>
           <% else %>
             <p class="text-secondary">
@@ -124,6 +134,8 @@
             ) %>
           </div>
         <% end %>
+
+
       </div>
     <% end %>
   </details>

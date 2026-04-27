@@ -76,7 +76,7 @@ RSpec.describe 'API V1 Imports', type: :request do
                 schema: { type: :string, enum: %w[pending complete importing reverting revert_failed failed] }
       parameter name: :type, in: :query, required: false,
                 description: 'Filter by import type',
-                schema: { type: :string, enum: %w[TransactionImport TradeImport AccountImport MintImport CategoryImport RuleImport] }
+                schema: { type: :string, enum: %w[TransactionImport TradeImport TradePriceUpdateImport AccountImport MintImport CategoryImport RuleImport] }
 
       response '200', 'imports listed' do
         schema '$ref' => '#/components/schemas/ImportCollection'
@@ -117,7 +117,7 @@ RSpec.describe 'API V1 Imports', type: :request do
           },
           type: {
             type: :string,
-            enum: %w[TransactionImport TradeImport AccountImport MintImport CategoryImport RuleImport],
+            enum: %w[TransactionImport TradeImport TradePriceUpdateImport AccountImport MintImport CategoryImport RuleImport],
             description: 'Import type (defaults to TransactionImport)'
           },
           account_id: {
@@ -152,6 +152,18 @@ RSpec.describe 'API V1 Imports', type: :request do
           notes_col_label: {
             type: :string,
             description: 'Header name for the notes column'
+          },
+          external_id_col_label: {
+            type: :string,
+            description: 'Header name for the external ID column'
+          },
+          price_col_label: {
+            type: :string,
+            description: 'Header name for the trade price column'
+          },
+          fee_col_label: {
+            type: :string,
+            description: 'Header name for the trade fee column'
           },
           date_format: {
             type: :string,

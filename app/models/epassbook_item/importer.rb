@@ -130,12 +130,42 @@ class EpassbookItem::Importer
 
     def import_stock_accounts(stats)
       last_update_time = epassbook_item.last_stock_update_time.presence || Provider::Epassbook::DEFAULT_SERVER_TIME
-      balance_result = client.get_balance(last_update_time: last_update_time)
+      holdings_updated = true
 
-      epassbook_item.upsert_raw_snapshot!(balance_result)
+      begin
+        balance_result = client.get_balance(last_update_time: last_update_time)
+      rescue Provider::Epassbook::EpassbookError => e
+        if e.code == "D0002"
+          Rails.logger.info("EpassbookItem::Importer - no new holdings data since last sync (D0002), skipping holdings update but still fetching trades")
+          holdings_updated = false
+          balance_result = nil
+        else
+          raise
+        end
+      end
+
+      if holdings_updated && balance_result
+        epassbook_item.upsert_raw_snapshot!(balance_result)
+        new_server_time = balance_result["lastServerTime"]
+        epassbook_item.update!(last_stock_update_time: new_server_time) if new_server_time.present?
+      end
+
+      # Always fetch trade details for all existing stock accounts (even when holdings unchanged)
+      epassbook_item.epassbook_accounts.stock_accounts.each do |ea|
+        begin
+          import_stock_trades(ea)
+          stats[:stock_accounts] += 1
+        rescue Provider::Epassbook::EpassbookError => e
+          Rails.logger.warn("EpassbookItem::Importer - stock #{ea.remote_id} TR002 skipped: [#{e.code}] #{e.message}")
+        rescue StandardError => e
+          Rails.logger.error("EpassbookItem::Importer - stock #{ea.remote_id} failed: #{e.message}")
+          stats[:errors] << { type: "stock", remote_id: ea.remote_id, message: e.message }
+        end
+      end
+
+      return unless holdings_updated && balance_result
 
       broker_items = balance_result["accounts"] || []
-      new_server_time = balance_result["lastServerTime"]
 
       broker_items.each do |broker|
         broker_no      = broker["brokerNo"].to_s
@@ -167,18 +197,10 @@ class EpassbookItem::Importer
         Rails.logger.info("EpassbookItem::Importer - stock #{remote_id}: #{holdings_count} holdings from TR001")
         ea.save!
         stats[:stock_accounts] += 1
-
-        begin
-          import_stock_trades(ea)
-        rescue Provider::Epassbook::EpassbookError => e
-          Rails.logger.warn("EpassbookItem::Importer - stock #{remote_id} TR002 skipped: [#{e.code}] #{e.message}")
-        end
       rescue StandardError => e
         Rails.logger.error("EpassbookItem::Importer - stock #{remote_id} failed: #{e.message}")
         stats[:errors] << { type: "stock", remote_id: remote_id, message: e.message }
       end
-
-      epassbook_item.update!(last_stock_update_time: new_server_time) if new_server_time.present?
     end
 
     def import_stock_trades(epassbook_account)
@@ -275,7 +297,7 @@ class EpassbookItem::Importer
       })
     end
 
-    # ── Fund accounts (TR051V1) ──
+    # ── Fund accounts (TR051V1 holdings + TR052 trades) ──
 
     def import_fund_accounts(stats)
       result = client.get_personal_fund_info
@@ -298,14 +320,69 @@ class EpassbookItem::Importer
       )
       ea.save!
 
+      import_fund_trades(ea, fund_details)
+
       stats[:fund_accounts] += 1
     rescue StandardError => e
       Rails.logger.error("EpassbookItem::Importer - fund import failed: #{e.message}")
       stats[:errors] << { type: "fund", remote_id: "fund_portfolio", message: e.message }
     end
 
+    def import_fund_trades(epassbook_account, fund_details)
+      # APK SQL (MyAssetFundPurchaseChannelFragment):
+      #   saleOrgCode      = SELECT saleOrgCode FROM FundDetail WHERE saleOrgName=f.saleOrgName AND fundPlatform='基金交易平台'
+      #   saleOrgCodeShort = SELECT saleOrgCode FROM FundDetail WHERE saleOrgName=f.saleOrgName AND fundPlatform='存託'
+      # Group by saleOrgName and call TR052 once per channel using correct code mapping.
+      org_name_groups = fund_details.group_by { |f| f["saleOrgName"].to_s }
+
+      return if org_name_groups.empty?
+
+      end_date   = Date.today.strftime("%Y%m%d")
+      start_date = (Date.today - 2.years).strftime("%Y%m%d")
+      all_items  = []
+
+      org_name_groups.each do |org_name, funds|
+        platform_fund       = funds.find { |f| f["fundPlatform"] == "基金交易平台" }
+        trust_fund          = funds.find { |f| f["fundPlatform"] == "存託" }
+        sale_org_code       = platform_fund&.dig("saleOrgCode").to_s
+        sale_org_code_short = trust_fund&.dig("saleOrgCode").to_s
+
+        next if sale_org_code.blank? && sale_org_code_short.blank?
+
+        result = client.get_personal_fund_detail(
+          sale_org_code:       sale_org_code,
+          sale_org_code_short: sale_org_code_short,
+          start_date:          start_date,
+          end_date:            end_date
+        )
+
+        items = result["items"] || []
+        Rails.logger.info("EpassbookItem::Importer - fund trades #{org_name}: #{items.length} items")
+        all_items.concat(items)
+      rescue Provider::Epassbook::EpassbookError => e
+        Rails.logger.warn("EpassbookItem::Importer - fund trades #{org_name} skipped: [#{e.code}] #{e.message}")
+      end
+
+      return if all_items.empty?
+
+      existing  = epassbook_account.raw_transactions_payload&.dig("fund_trades") || []
+      seen      = existing.map { |i| fund_trade_key(i) }.to_set
+      new_items = all_items.reject { |i| seen.include?(fund_trade_key(i)) }
+
+      return if new_items.empty?
+
+      epassbook_account.upsert_transactions_snapshot!({
+        "fund_trades" => existing + new_items,
+        "fetched_at"  => Time.current.iso8601
+      })
+    end
+
+    def fund_trade_key(item)
+      "#{item["fundNo"]}:#{item["area"]}:#{item["unit"]}:#{item["netValueDate"]}"
+    end
+
     def handle_auth_error(error)
-      auth_error_codes = %w[AU0001 AU0002 AU0003 AU0004 SESSION_EXPIRED INVALID_TOKEN]
+      auth_error_codes = %w[AU0001 AU0002 AU0003 AU0004 SESSION_EXPIRED INVALID_TOKEN DIFF_DEVICE]
       epassbook_item.update!(status: :requires_update) if auth_error_codes.include?(error.code)
     end
 end

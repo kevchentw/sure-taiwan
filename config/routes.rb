@@ -281,6 +281,7 @@ Rails.application.routes.draw do
   resources :trades, only: %i[show new create update destroy] do
     member do
       post :unlock
+      get :estimated_price
     end
   end
   resources :valuations, only: %i[show new create update destroy] do
@@ -487,6 +488,7 @@ Rails.application.routes.draw do
 
     member do
       post :sync
+      post :request_otp
       get :otp
       post :verify_otp
       get :setup_accounts

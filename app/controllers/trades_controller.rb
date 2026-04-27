@@ -43,6 +43,12 @@ class TradesController < ApplicationController
     return unless require_account_permission!(@entry.account)
 
     if @entry.update(update_entry_params)
+      # Recalculate entry amount from updated price/qty for buy/sell trades
+      trade = @entry.trade
+      if trade.qty.nonzero?
+        @entry.update_column(:amount, (trade.qty * trade.price + trade.fee).round(2))
+      end
+
       @entry.lock_saved_attributes!
       @entry.mark_user_modified!
       @entry.sync_account_later
@@ -73,10 +79,24 @@ class TradesController < ApplicationController
     end
   end
 
+  def estimated_price
+    entry = Current.family.entries
+              .joins(:account)
+              .merge(Account.accessible_by(Current.user))
+              .find(params[:id])
+    return unless require_account_permission!(entry.account)
+
+    price = entry.trade.security&.find_or_fetch_price(date: entry.date)
+
+    if price
+      render json: { price: price.price.to_f }
+    else
+      render json: { error: "Price not available" }, status: :not_found
+    end
+  end
+
   def unlock
     return unless require_account_permission!(@entry.account)
-
-    @entry.unlock_for_sync!
     flash[:notice] = t("entries.unlock.success")
 
     redirect_back_or_to account_path(@entry.account)

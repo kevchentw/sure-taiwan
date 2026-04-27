@@ -3,13 +3,13 @@
 <% condition = form.object %>
 <% rule = condition.rule %>
 
-<li data-controller="rule--conditions" data-rule--conditions-condition-filters-value="<%= rule.condition_filters.to_json %>" class="flex items-center gap-3">
+<li data-controller="rule--conditions" data-rule--conditions-condition-filters-value="<%= rule.condition_filters.to_json %>" data-rule--conditions-value-placeholder-value="<%= t("rules.form.value_placeholder") %>" class="flex items-center gap-3">
 
   <%# Conditionally render the prefix %>
   <%# Condition groups pass in show_prefix: false for subconditions since the ANY/ALL selector makes that clear %>
   <% if show_prefix %>
     <div class="pl-2" data-condition-prefix>
-      <span class="font-medium uppercase text-xs">and</span>
+      <span class="font-medium uppercase text-xs"><%= t("rules.form.condition_prefix.and") %></span>
     </div>
   <% end %>
 
@@ -29,7 +29,7 @@
         <% if condition.filter.type == "number" %>
           <%= form.number_field :value, placeholder: "10", step: 0.01 %>
         <% else %>
-          <%= form.text_field :value, placeholder: "Enter a value" %>
+          <%= form.text_field :value, placeholder: t("rules.form.value_placeholder") %>
         <% end %>
       <% end %>
     </div>

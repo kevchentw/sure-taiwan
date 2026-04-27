@@ -86,7 +86,7 @@ class Family::DataExporter
 
     def generate_trades_csv
       CSV.generate do |csv|
-        csv << [ "date", "account_name", "ticker", "quantity", "price", "amount", "currency" ]
+        csv << [ "date", "account_name", "ticker", "quantity", "price", "fee", "amount", "currency", "external_id" ]
 
         # Only export trades from accounts belonging to this family
         @family.trades
@@ -98,8 +98,10 @@ class Family::DataExporter
               trade.security.ticker,
               trade.qty.to_s,
               trade.price.to_s,
+              trade.fee.to_s,
               trade.entry.amount.to_s,
-              trade.currency
+              trade.currency,
+              trade.entry.external_id
             ]
           end
       end
@@ -215,6 +217,7 @@ class Family::DataExporter
             date: trade.entry.date,
             qty: trade.qty,
             price: trade.price,
+            fee: trade.fee,
             amount: trade.entry.amount,
             currency: trade.currency,
             created_at: trade.created_at,

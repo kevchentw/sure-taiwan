@@ -55,6 +55,10 @@ class Rule::Condition < ApplicationRecord
     filter.operators
   end
 
+  def operator_display
+    operators.find { |option| option.last == operator }&.first || operator
+  end
+
   def filter
     rule.registry.get_filter!(condition_type)
   end

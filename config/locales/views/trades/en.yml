@@ -39,6 +39,7 @@ en:
       buy: Buy
       category_label: Category
       cost_per_share_label: Cost per Share
+      fetch_price_label: Estimate from closing price
       date_label: Date
       delete: Delete
       fee_label: Transaction fee

@@ -14,6 +14,11 @@ zh-TW:
         unexpected: 發生非預期的錯誤，請再試一次。
     destroy:
       success: 集保 e 存摺連結將會被移除。
+    request_otp:
+      otp_sent: 驗證碼已傳送至您的註冊電子郵件，請在下方輸入。
+      errors:
+        no_credentials: 找不到憑證，請重新連結您的 e 存摺帳號。
+        unexpected: 發生非預期的錯誤，請再試一次。
     otp:
       title: 電子郵件驗證
       description: 請輸入傳送至您註冊電子郵件地址的驗證碼。
@@ -61,6 +66,7 @@ zh-TW:
         other: "%{count} 個帳戶已同步"
       partial_sync: "%{linked_count} 個已同步，%{unlinked_count} 個待設定"
     epassbook_item:
+      send_otp: 重新驗證
       deletion_in_progress: （刪除中...）
       syncing: 同步中...
       requires_update: 重新連結

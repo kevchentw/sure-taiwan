@@ -1,10 +1,72 @@
 ---
 en:
   rules:
+    back_to_rules: Back to rules
     no_action: No Action
     no_condition: No condition
+    resources:
+      transaction:
+        one: transaction
+        other: transactions
+    new:
+      title: New %{resource} rule
+    edit:
+      title: Edit %{resource} rule
+      title_with_name: Edit %{resource} rule "%{name}"
+    index:
+      title: Rules
+      new_rule: New rule
+      edit_rules: Edit rules
+      delete_all: Delete all rules
+      all_rules: all rules
+      ai_cost_notice: AI-enabled rule actions will cost money. Be sure to filter as narrowly as possible to avoid unnecessary costs.
+      sort_by: "Sort by:"
+      sort_options:
+        name: Name
+        updated_at: Updated At
+      toggle_sort_direction: Toggle sort direction
+      empty_title: No rules yet
+      empty_description: Set up rules to perform actions to your transactions and other data on every account sync.
+    form:
+      name_label: Rule name (optional)
+      name_placeholder: Enter a name for this rule
+      value_placeholder: Enter a value
+      add_condition: Add condition
+      add_condition_group: Add condition group
+      add_action: Add action
+      all_past_and_future: All past and future %{resource}
+      starting_from: Starting from
+      create_button: Create Rule
+      update_button: Update Rule
+      sections:
+        if: IF
+        then: THEN
+        for: FOR
+      condition_prefix:
+        and: and
+      condition_group:
+        match: match
+        all: all
+        any: any
+        of_following_conditions: of the following conditions
+    rule:
+      primary_condition_title: If %{filter} %{operator} %{value}
+      action_with_value: "%{action} to %{value}"
+      additional_conditions:
+        one: and 1 more condition
+        other: and %{count} more conditions
+      additional_actions:
+        one: and 1 more action
+        other: and %{count} more actions
+      on_or_after: "%{resource} on or after %{date}"
+      edit: Edit
+      reapply: Re-apply rule
+      delete: Delete
+      resource_name: rule
     actions:
       value_placeholder: Enter a value
+      to: to
+      empty_option: (none)
     apply_all:
       button: Apply All
       confirm_title: Apply All Rules
@@ -45,8 +107,41 @@ en:
       confirm_button: Reset Cache
       success: AI cache is being cleared. This may take a few moments.
     condition_filters:
+      labels:
+        transaction_name: Transaction name
+        transaction_amount: Transaction amount
+        transaction_type: Transaction type
+        transaction_merchant: Transaction merchant
+        transaction_category: Transaction category
+        transaction_details: Transaction details
+        transaction_notes: Transaction notes
+        transaction_account: Transaction account
+      operators:
+        like: Contains
+        "=": Equal to
+        is_null: Is empty
+        ">": Greater than
+        ">=": Greater or equal to
+        "<": Less than
+        "<=": Less than or equal to
       transaction_type:
         income: Income
         expense: Expense
         transfer: Transfer
         equal_to: Equal to
+    action_executors:
+      labels:
+        set_transaction_category: Set transaction category
+        set_transaction_tags: Set transaction tags
+        set_transaction_merchant: Set transaction merchant
+        set_transaction_name: Set transaction name
+        set_investment_activity_label: Set investment activity label
+        exclude_transaction: Exclude from budgeting and reports
+        set_as_transfer_or_payment: Set as transfer or payment
+        auto_categorize: Auto-categorize transactions with AI
+        auto_detect_merchants: Auto-detect merchants
+        auto_detect_merchants_paid: Auto-detect merchants with AI ($$)
+      suffixes:
+        cost_unavailable: " (cost: N/A)"
+        estimated_cost: " (~$%{cost} per 20 transactions)"
+        no_llm_provider: " (no LLM provider configured)"

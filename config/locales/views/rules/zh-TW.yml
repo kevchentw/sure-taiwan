@@ -1,8 +1,83 @@
 ---
 zh-TW:
   rules:
+    back_to_rules: 返回規則
     no_action: 無動作
     no_condition: 無條件
+    resources:
+      transaction:
+        one: 交易
+        other: 交易
+    new:
+      title: 新增%{resource}規則
+    edit:
+      title: 編輯%{resource}規則
+      title_with_name: 編輯%{resource}規則「%{name}」
+    index:
+      title: 規則
+      new_rule: 新增規則
+      edit_rules: 編輯規則
+      delete_all: 刪除所有規則
+      all_rules: 所有規則
+      ai_cost_notice: 啟用 AI 的規則動作會產生費用。請盡可能縮小篩選範圍以避免不必要的成本。
+      sort_by: 排序：
+      sort_options:
+        name: 名稱
+        updated_at: 更新時間
+      toggle_sort_direction: 切換排序方向
+      empty_title: 還沒有規則
+      empty_description: 設定規則，在每次帳戶同步時對交易和其他資料執行動作。
+    form:
+      name_label: 規則名稱（選填）
+      name_placeholder: 輸入此規則的名稱
+      value_placeholder: 輸入值
+      add_condition: 新增條件
+      add_condition_group: 新增條件群組
+      add_action: 新增動作
+      all_past_and_future: 所有過去和未來的%{resource}
+      starting_from: 從此日期開始
+      create_button: 建立規則
+      update_button: 更新規則
+      sections:
+        if: 如果
+        then: 則
+        for: 適用於
+      condition_prefix:
+        and: 且
+      condition_group:
+        match: 符合
+        all: 全部
+        any: 任一
+        of_following_conditions: 以下條件
+    rule:
+      primary_condition_title: 如果%{filter}%{operator}%{value}
+      action_with_value: "%{action}為%{value}"
+      additional_conditions:
+        other: 以及另外 %{count} 個條件
+      additional_actions:
+        other: 以及另外 %{count} 個動作
+      on_or_after: "%{date} 之後的%{resource}"
+      edit: 編輯
+      reapply: 重新套用規則
+      delete: 刪除
+      resource_name: 規則
+    actions:
+      value_placeholder: 輸入值
+      to: 為
+      empty_option: （無）
+    apply_all:
+      button: 全部套用
+      confirm_title: 套用所有規則
+      confirm_message: 即將套用 %{count} 個規則，影響 %{transactions} 筆不重複交易。請確認是否繼續。
+      confirm_button: 確認並全部套用
+      success: 所有規則已排入執行佇列
+      ai_cost_title: AI 成本估算
+      ai_cost_message: 這會使用 AI 分類最多 %{transactions} 筆交易。
+      estimated_cost: "估計成本：約 $%{cost}"
+      cost_unavailable_model: 無法估算模型「%{model}」的成本。
+      cost_unavailable_no_provider: 無法估算成本（尚未設定 LLM 提供者）。
+      cost_warning: 可能會產生費用，請向模型提供者確認最新價格。
+      view_usage: 查看用量紀錄
     recent_runs:
       title: 最近執行紀錄
       description: 查看規則的執行歷史，包括成功/失敗狀態以及交易處理筆數。
@@ -23,3 +98,48 @@ zh-TW:
         pending: 待處理
         success: 成功
         failed: 失敗
+    clear_ai_cache:
+      button: 重設 AI 快取
+      confirm_title: 要重設 AI 快取嗎？
+      confirm_body: 確定要重設 AI 快取嗎？這會讓 AI 規則重新處理所有交易，可能會產生額外 API 費用。
+      confirm_button: 重設快取
+      success: 正在清除 AI 快取，可能需要一點時間。
+    condition_filters:
+      labels:
+        transaction_name: 交易名稱
+        transaction_amount: 交易金額
+        transaction_type: 交易類型
+        transaction_merchant: 交易商家
+        transaction_category: 交易分類
+        transaction_details: 交易詳細資料
+        transaction_notes: 交易備註
+        transaction_account: 交易帳戶
+      operators:
+        like: 包含
+        "=": 等於
+        is_null: 為空
+        ">": 大於
+        ">=": 大於或等於
+        "<": 小於
+        "<=": 小於或等於
+      transaction_type:
+        income: 收入
+        expense: 支出
+        transfer: 轉帳
+        equal_to: 等於
+    action_executors:
+      labels:
+        set_transaction_category: 設定交易分類
+        set_transaction_tags: 設定交易標籤
+        set_transaction_merchant: 設定交易商家
+        set_transaction_name: 設定交易名稱
+        set_investment_activity_label: 設定投資活動標籤
+        exclude_transaction: 從預算與報表中排除
+        set_as_transfer_or_payment: 設為轉帳或付款
+        auto_categorize: 使用 AI 自動分類交易
+        auto_detect_merchants: 自動偵測商家
+        auto_detect_merchants_paid: 使用 AI 自動偵測商家（可能產生費用）
+      suffixes:
+        cost_unavailable: "（成本：無法取得）"
+        estimated_cost: "（每 20 筆交易約 $%{cost}）"
+        no_llm_provider: "（未設定 LLM 提供者）"
