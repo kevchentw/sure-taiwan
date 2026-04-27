@@ -2,7 +2,15 @@
 en:
   breadcrumbs:
     categorize: Categorize
+    ai_prompts: AI Prompts
+    api_key: API Key
+    bank_sync_providers: Bank Sync Providers
     exports: Exports
+    guides: Guides
     home: Home
     imports: Imports
+    llm_usage: LLM Usage
+    profile_info: Profile Info
+    security: Security
+    self_hosting: Self-Hosting
     transactions: Transactions

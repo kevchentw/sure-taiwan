@@ -1,0 +1,16 @@
+---
+zh-TW:
+  breadcrumbs:
+    categorize: 分類
+    ai_prompts: AI 提示詞
+    api_key: API 金鑰
+    bank_sync_providers: 銀行同步提供者
+    exports: 匯出
+    guides: 使用指南
+    home: 首頁
+    imports: 匯入
+    llm_usage: LLM 使用量
+    profile_info: 個人資料
+    security: 安全性
+    self_hosting: 自行代管
+    transactions: 交易

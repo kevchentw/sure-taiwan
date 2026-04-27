@@ -1,31 +1,75 @@
 ---
 zh-TW:
   import:
+    qif_category_selections:
+      show:
+        title: 設定與選擇
+        description: 檢查偵測到的日期格式，然後選擇要從 QIF 檔案匯入 %{product_name} 的類別與標籤。
+        categories_heading: 類別
+        categories_found:
+          one: 找到 1 個類別
+          other: 找到 %{count} 個類別
+        category_name_col: 類別名稱
+        transactions_col: 交易
+        tags_heading: 標籤
+        tags_found:
+          one: 找到 1 個標籤
+          other: 找到 %{count} 個標籤
+        tag_name_col: 標籤名稱
+        txn_count:
+          one: 1 筆交易
+          other: "%{count} 筆交易"
+        split_warning_title: 偵測到拆分交易
+        split_warning_description: 此 QIF 檔案包含拆分交易。拆分交易目前尚未支援，因此每筆拆分交易會以完整金額匯入為單筆交易，且不保留類別。個別拆分明細不會被保留。
+        split_badge: 拆分
+        empty_state_primary: 此 QIF 檔案中找不到類別或標籤。
+        empty_state_secondary: 所有交易都會以未分類、無標籤的方式匯入。
+        submit: 繼續檢查
     cleans:
       show:
         description: 在下表中編輯您的資料。紅色的儲存格為無效內容。
+        all_rows: 所有資料列
+        cleaned_notice: 您的資料已完成校正
         errors_notice: 您的資料中有錯誤。將游標移至錯誤上方可查看詳細資訊。
         errors_notice_mobile: 您的資料中有錯誤。點擊錯誤提示框可查看詳細資訊。
+        error_rows: 錯誤資料列
+        next_step: 下一步
         title: 校正您的資料
     configurations:
+      update:
+        success: 匯入設定已成功套用。
       category_import:
         button_label: 繼續
         description: 上傳一個簡單的 CSV 檔案（類似於匯出資料時產生的檔案）。我們將自動為您對應欄位。
         instructions: 點擊繼續以解析您的 CSV 並進入校正步驟。
       mint_import:
         date_format_label: 日期格式
+        preconfigured_notice: 我們已為您預先設定 Mint 匯入。請繼續進行下一步。
       rule_import:
         description: 設定規則匯入。系統將根據 CSV 資料建立或更新規則。
         process_button: 處理規則
         process_help: 點擊下方按鈕以處理您的 CSV 並產生規則資料列。
       show:
         description: 選擇 CSV 中對應各個欄位的項目。
+        apply_template: 套用範本
+        manual_configure: 手動設定
+        sample_caption: 已上傳 CSV 的範例資料
+        template_found_description: 我們找到此帳戶先前匯入時使用的設定。是否要套用到這次匯入？
+        template_found_title: 找到匯入設定範本
         title: 設定您的匯入項目
       trade_import:
         date_format_label: 日期格式
       transaction_import:
         date_format_label: 日期格式
+        rows_to_skip_label: 略過前 n 列
     confirms:
+      sure_import:
+        title: 確認您的匯入
+        description: 檢查將從匯出檔匯入的資料。
+        summary: 匯入摘要
+        empty_summary: 在此檔案中找不到可匯入的記錄。檔案可能是空的，或各行不符合預期的匯出格式（每行應為包含「type」與「data」鍵的 JSON 物件，且類型須為此匯入支援的類型）。
+        publish_button: 開始匯入
+        cancel: 取消
       mappings:
         create_account: 建立帳戶
         csv_mapping_label: "CSV 中的 %{mapping}"
@@ -44,17 +88,157 @@ zh-TW:
         tag_mapping_title: 分配您的標籤
     uploads:
       show:
+        qif_title: 上傳 QIF 檔案
+        qif_description: 選擇此 QIF 檔案所屬的帳戶，然後上傳從 Quicken 匯出的 .qif 檔。
+        qif_account_label: 帳戶
+        qif_account_placeholder: 選擇帳戶…
+        qif_file_prompt: 將您的 QIF 檔案加入這裡
+        qif_file_hint: 僅支援 .qif 檔
+        qif_submit: 上傳 QIF
+        browse: 瀏覽
+        account_label: 帳戶（選填）
+        csv_file_prompt: 將您的 CSV 檔案加入這裡
         description: 在下方貼上或上傳您的 CSV 檔案。開始前請先閱讀下表中的說明。
+        download_sample_csv: 下載範例 CSV
+        drop_title: 放開即可上傳 CSV
+        drop_subtitle: 檔案將會自動上傳
         instructions_1: 以下是可用於匯入的 CSV 範例欄位。
         instructions_2: 您的 CSV 檔案必須包含標題列 (Header row)
         instructions_3: 您可以隨意命名您的欄位標題，稍後步驟中再進行對應即可。
         instructions_4: 標有星號 (*) 的欄位為必填資料。
         instructions_5: 數字中請勿包含逗號、貨幣符號或括號。
+        multi_account_import: 多帳戶匯入
+        paste_placeholder: 在此貼上 CSV 檔案內容
+        sample_csv_hint: 以查看必要的 CSV 格式
+        separator:
+          comma: 逗號 (,)
+          semicolon: 分號 (;)
+        tab_copy_paste: 複製貼上
+        tab_upload_csv: 上傳 CSV
         title: 匯入您的資料
+        upload_csv: 上傳 CSV
+      sure_import:
+        title: 從匯出檔匯入
+        description: 上傳資料匯出中的 all.ndjson 檔案，以還原您的帳戶、交易、類別等資料。
+        drop_title: 放開即可上傳 NDJSON
+        drop_subtitle: 檔案將會自動上傳
+        browse: 瀏覽
+        browse_hint: 將您的 all.ndjson 檔案加入這裡
+        upload_button: 上傳 NDJSON
+        hint_html: 上傳資料匯出 ZIP 中的 <strong>all.ndjson</strong> 檔案
+        ndjson_invalid: 必須是有效且至少包含一筆記錄的 NDJSON
   imports:
+    date_format:
+      heading: 日期格式
+      description: 系統已從您的檔案自動偵測日期格式。如果日期看起來不正確，請調整格式。
+      preview: 第一筆解析日期
+      error_title: 無法偵測日期格式
+      error_description: 支援的日期格式都無法解析此檔案中的日期。請確認檔案包含有效的日期資料。
+    type_labels:
+      transaction_import: 交易匯入
+      trade_import: 投資交易匯入
+      account_import: 帳戶匯入
+      mint_import: Mint 匯入
+      qif_import: QIF 匯入
+      category_import: 類別匯入
+      rule_import: 規則匯入
+      pdf_import: PDF 匯入
+      document_import: 文件匯入
+      sure_import: Sure 匯入
+    steps:
+      upload: 上傳
+      configure: 設定
+      clean: 校正
+      map: 對應
+      confirm: 確認
+      select: 選擇
+      progress: 第 %{step} 步，共 %{total} 步
+    mapping_labels:
+      account_type: 帳戶類型
+      account: 帳戶
+      category: 類別
+      tag: 標籤
+    column_labels:
+      date: 日期
+      amount: 金額
+      name: 名稱
+      currency: 貨幣
+      category: 類別
+      tags: 標籤
+      account: 帳戶
+      notes: 備註
+      quantity: 數量
+      ticker: 代號
+      exchange: 交易所
+      price: 價格
+      type: 類型
+      parent_category: 上層類別
+      color: 顏色
+      lucide_icon: Lucide 圖示
+    resources:
+      transactions: 交易
+      accounts: 帳戶
+      categories: 類別
+      tags: 標籤
+      rules: 規則
+      merchants: 商家
+      trades: 投資交易
+      valuations: 估值
+      budgets: 預算
+      budget_categories: 預算類別
+    form:
+      account: 帳戶
+      account_optional: 帳戶（選填）
+      amount: 金額
+      amount_type: 金額類型
+      amount_type_strategy: 金額類型策略
+      amount_type_strategies:
+        signed_amount: 帶正負號的金額
+        custom_column: 自訂欄位
+      apply_configuration: 套用設定
+      as_amount_type_column: 設為金額類型欄位
+      as_identifier_value: 設為識別值
+      balance: 餘額
+      balance_date: 餘額日期
+      buys_negative_qty: 買入為負數量
+      buys_positive_qty: 買入為正數量
+      category: 類別
+      category_optional: 類別（選填）
+      currency: 貨幣
+      date: 日期
+      date_format: 日期格式
+      default: 預設
+      entity_type: 實體類型
+      expense_outflow: 支出（流出）
+      format: 格式
+      income_inflow: 收入（流入）
+      incomes_negative: 收入為負數
+      incomes_positive: 收入為正數
+      leave_empty: 留空
+      name: 名稱
+      name_optional: 名稱（選填）
+      note: 注意：
+      notes: 備註
+      price: 價格
+      quantity: 數量
+      security_provider_not_configured: 尚未設定證券價格提供者。您的投資交易仍可匯入，但 Sure 不會回補歷史價格。請前往設定完成此項設定。
+      select_column: 選擇欄位
+      select_convention: 選擇慣例
+      select_format: 選擇格式
+      select_strategy: 選擇策略
+      select_type: 選擇類型
+      select_value: 選擇值
+      set: 設定
+      stock_exchange_code: 證券交易所代碼
+      tags: 標籤
+      tags_optional: 標籤（選填）
+      ticker: 股票代號
+      treat_as_html: 將「%{value}」視為
     index:
       title: 匯入紀錄
       new: 新增匯入
+      bulk_price_update_title: 批次更新交易成本價
+      bulk_price_update_submit: 更新成本價
     table:
       title: 匯入紀錄
       header:
@@ -63,6 +247,17 @@ zh-TW:
         status: 狀態
         actions: 行動
       row:
+        type_labels:
+          transaction_import: 交易
+          trade_import: 投資交易
+          account_import: 帳戶
+          mint_import: Mint
+          qif_import: QIF
+          category_import: 類別
+          rule_import: 規則
+          pdf_import: PDF
+          document_import: 文件
+          sure_import: Sure
         status:
           in_progress: 處理中
           uploading: 正在處理資料列
@@ -77,16 +272,43 @@ zh-TW:
           view: 查看
       empty: 尚無匯入紀錄。
     new:
-      description: 您可以透過 CSV 手動匯入各種類型的資料，或使用我們提供的匯入範本（如 Mint）。
+      description: 從財務工具匯入，或上傳原始資料檔案。
+      tab_financial_tools: 財務工具與檔案
+      tab_raw_data: 原始資料
+      coming_soon: 即將推出
+      import_ynab: 從 YNAB 匯入
       import_accounts: 匯入帳戶
       import_categories: 匯入類別
       import_mint: 從 Mint 匯入
-      import_portfolio: 匯入投資組合
+      import_portfolio: 匯入投資
       import_rules: 匯入規則
       import_transactions: 匯入交易紀錄
+      import_qif: 從 Quicken 匯入 (QIF)
+      import_sure: 從 Sure 匯入
+      import_sure_description: 完整匯出的 .ndjson 檔案
+      import_file: 匯入文件
+      import_file_description: 由 AI 輔助分析 PDF 與可搜尋的檔案上傳
+      requires_account: 請先匯入帳戶才能使用此選項。
       resume: 繼續處理 %{type}
       sources: 來源
-      title: 新增 CSV 匯入
+      title: 新增匯入
+    create:
+      file_too_large: 檔案太大。大小上限為 %{max_size}MB。
+      invalid_file_type: 檔案類型無效。請上傳 CSV 檔案。
+      csv_uploaded: CSV 上傳成功。
+      ndjson_uploaded: NDJSON 檔案上傳成功。
+      pdf_too_large: PDF 檔案太大。大小上限為 %{max_size}MB。
+      pdf_processing: 您的 PDF 正在處理中。分析完成後您會收到電子郵件。
+      invalid_pdf: 上傳的檔案不是有效的 PDF。
+      document_too_large: 文件檔案太大。大小上限為 %{max_size}MB。
+      invalid_document_file_type: 目前的向量資料庫不支援此文件檔案類型。
+      document_uploaded: 文件上傳成功。
+      document_upload_failed: 無法將文件上傳到向量資料庫。請再試一次。
+      invalid_ndjson_file_type: 檔案類型或格式無效。請上傳有效的 .ndjson 或 .json 匯出檔案。
+      document_provider_not_configured: 尚未設定文件上傳使用的向量資料庫。
+    show:
+      finalize_upload: 請完成檔案上傳。
+      finalize_mappings: 繼續前請完成對應設定。
     ready:
       description: 以下是發佈此匯入後，將新增至您帳戶的項目摘要。
       title: 確認您的匯入資料
@@ -95,3 +317,46 @@ zh-TW:
       empty_summary: 在此檔案中找不到可匯入的記錄。檔案可能是空的，或各行不符合預期的匯出格式（每行應為包含「type」與「data」鍵的 JSON 物件，且類型須為此匯入支援的類型）。
       publish_import: 發佈匯入
       back_to_imports: 返回匯入列表
+    errors:
+      custom_column_requires_inflow: 自訂欄位匯入需要選擇一個流入欄位
+    document_types:
+      bank_statement: 銀行對帳單
+      credit_card_statement: 信用卡帳單
+      investment_statement: 投資對帳單
+      financial_document: 財務文件
+      contract: 合約
+      other: 其他文件
+      unknown: 未知文件
+    pdf_import:
+      ready_for_review_title: 準備好檢查
+      ready_for_review_description: 我們已從您的對帳單擷取 %{count} 筆交易。檢查並發佈後即可加入您的帳戶。
+      transactions_extracted: 已擷取交易
+      transactions_extracted_count: "%{count} 筆交易"
+      select_account: 匯入到帳戶
+      select_account_placeholder: 選擇帳戶...
+      select_account_hint: 選擇要匯入這些交易的帳戶。
+      no_accounts: 沒有可用帳戶。請先建立帳戶。
+      create_account: 建立帳戶
+      save_account: 儲存
+      publish_transactions: 發佈 %{count} 筆交易
+      review_transactions: 檢查交易
+      select_account_to_continue: 請先在上方選擇帳戶才能繼續。
+      unknown_document_type: 未知
+      processing_title: 正在處理您的 PDF
+      processing_description: 我們正在使用 AI 分析您的文件。這可能需要一些時間。分析完成後您會收到電子郵件。
+      check_status: 檢查狀態
+      back_to_dashboard: 返回儀表板
+      failed_title: 處理失敗
+      failed_description: 無法處理您的 PDF 文件。請再試一次或聯絡支援。
+      try_again: 再試一次
+      delete_import: 刪除匯入
+      complete_title: 文件已分析
+      complete_description: 我們已分析您的 PDF，以下是分析結果。
+      document_type_label: 文件類型
+      summary_label: 摘要
+      email_sent_notice: 已寄出包含後續步驟的電子郵件給您。
+      back_to_imports: 返回匯入列表
+      unknown_state_title: 未知狀態
+      unknown_state_description: 此匯入處於非預期狀態。請返回匯入列表。
+      processing_failed_with_message: "%{message}"
+      processing_failed_generic: "處理失敗：%{error}"

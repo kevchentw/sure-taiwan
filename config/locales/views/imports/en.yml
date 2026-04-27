@@ -28,10 +28,14 @@ en:
     cleans:
       show:
         description: Edit your data in the table below.  Red cells are invalid.
+        all_rows: All rows
+        cleaned_notice: Your data has been cleaned
         errors_notice: You have errors in your data.  Hover over the error to see
           details.
         errors_notice_mobile: You have errors in your data.  Tap over the error tooltip to see
           details.
+        error_rows: Error rows
+        next_step: Next step
         title: Clean your data
     configurations:
       update:
@@ -43,6 +47,7 @@ en:
         instructions: Select continue to parse your CSV and move on to the clean step.
       mint_import:
         date_format_label: Date format
+        preconfigured_notice: We have pre-configured your Mint import for you. Please proceed to the next step.
       rule_import:
         description: Configure your rule import. Rules will be created or updated based
           on the CSV data.
@@ -50,6 +55,11 @@ en:
         process_help: Click the button below to process your CSV and generate rule rows.
       show:
         description: Select the columns that correspond to each field in your CSV.
+        apply_template: Apply template
+        manual_configure: Manually configure
+        sample_caption: Sample data from your uploaded CSV
+        template_found_description: We found a configuration from a previous import for this account. Would you like to apply it to this import?
+        template_found_title: Template configuration found
         title: Configure your import
       trade_import:
         date_format_label: Date format
@@ -98,16 +108,29 @@ en:
         qif_file_hint: .qif files only
         qif_submit: Upload QIF
         browse: Browse
+        account_label: Account (optional)
         csv_file_prompt: to add your CSV file here
         description: Paste or upload your CSV file below.  Please review the instructions
           in the table below before beginning.
+        download_sample_csv: Download a sample CSV
+        drop_title: Drop CSV to upload
+        drop_subtitle: Your file will be uploaded automatically
         instructions_1: Below is an example CSV with columns available for import.
         instructions_2: Your CSV must have a header row
         instructions_3: You may name your columns anything you like.  You will map
           them at a later step.
         instructions_4: Columns marked with an asterisk (*) are required data.
         instructions_5: No commas, no currency symbols, and no parentheses in numbers.
+        multi_account_import: Multi-account import
+        paste_placeholder: Paste your CSV file contents here
+        sample_csv_hint: to see the required CSV format
+        separator:
+          comma: Comma (,)
+          semicolon: Semicolon (;)
+        tab_copy_paste: Copy & Paste
+        tab_upload_csv: Upload CSV
         title: Import your data
+        upload_csv: Upload CSV
       sure_import:
         title: Import from export
         description: Upload the all.ndjson file from your data export to restore your accounts, transactions, categories, and more.
@@ -143,9 +166,93 @@ en:
       map: Map
       confirm: Confirm
       select: Select
+      progress: Step %{step} of %{total}
+    mapping_labels:
+      account_type: Account Type
+      account: Account
+      category: Category
+      tag: Tag
+    column_labels:
+      date: Date
+      amount: Amount
+      name: Name
+      currency: Currency
+      category: Category
+      tags: Tags
+      account: Account
+      notes: Notes
+      quantity: Quantity
+      ticker: Ticker
+      exchange: Exchange
+      price: Price
+      type: Type
+      parent_category: Parent category
+      color: Color
+      lucide_icon: Lucide icon
+    resources:
+      transactions: Transactions
+      accounts: Accounts
+      categories: Categories
+      tags: Tags
+      rules: Rules
+      merchants: Merchants
+      trades: Trades
+      valuations: Valuations
+      budgets: Budgets
+      budget_categories: Budget Categories
+    form:
+      account: Account
+      account_optional: Account (optional)
+      amount: Amount
+      amount_type: Amount type
+      amount_type_strategy: Amount type strategy
+      amount_type_strategies:
+        signed_amount: Signed amount
+        custom_column: Custom column
+      apply_configuration: Apply configuration
+      as_amount_type_column: as amount type column
+      as_identifier_value: as identifier value
+      balance: Balance
+      balance_date: Balance Date
+      buys_negative_qty: Buys are negative qty
+      buys_positive_qty: Buys are positive qty
+      category: Category
+      category_optional: Category (optional)
+      currency: Currency
+      date: Date
+      date_format: Date Format
+      default: Default
+      entity_type: Entity Type
+      expense_outflow: Expense (outflow)
+      format: Format
+      income_inflow: Income (inflow)
+      incomes_negative: Incomes are negative
+      incomes_positive: Incomes are positive
+      leave_empty: Leave empty
+      name: Name
+      name_optional: Name (optional)
+      note: "Note:"
+      notes: Notes
+      price: Price
+      quantity: Quantity
+      security_provider_not_configured: The security prices provider is not configured. Your trade imports will work, but Sure will not backfill price history. Please go to your settings to configure this.
+      select_column: Select column
+      select_convention: Select convention
+      select_format: Select format
+      select_strategy: Select strategy
+      select_type: Select type
+      select_value: Select value
+      set: Set
+      stock_exchange_code: Stock exchange code
+      tags: Tags
+      tags_optional: Tags (optional)
+      ticker: Ticker
+      treat_as_html: Treat "%{value}" as
     index:
       title: Imports
       new: New Import
+      bulk_price_update_title: Batch Update Trade Prices
+      bulk_price_update_submit: Update Prices
     table:
       title: Imports
       header:

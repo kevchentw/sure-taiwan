@@ -3,8 +3,10 @@ en:
   activerecord:
     attributes:
       import:
+        col_sep: Column separator
         currency: Currency
         number_format: Number Format
+        signage_convention: Amount type
     errors:
       models:
         import:

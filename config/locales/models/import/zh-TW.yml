@@ -3,8 +3,10 @@ zh-TW:
   activerecord:
     attributes:
       import:
+        col_sep: 欄位分隔符號
         currency: 貨幣
         number_format: 數字格式
+        signage_convention: 金額類型
     errors:
       models:
         import:
